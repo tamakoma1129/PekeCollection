@@ -1,0 +1,33 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "devDependencies": {
+        "@iconify/json": "^2.2.271",
+        "@inertiajs/vue3": "^2.0",
+        "@tailwindcss/forms": "^0.5.3",
+        "@vitejs/plugin-vue": "^5.0.0",
+        "autoprefixer": "^10.4.12",
+        "axios": "^1.7.4",
+        "chokidar": "^4.0.3",
+        "concurrently": "^9.0.1",
+        "laravel-vite-plugin": "^1.0",
+        "postcss": "^8.4.31",
+        "tailwindcss": "^3.2.1",
+        "unplugin-icons": "^0.20.1",
+        "unplugin-vue-components": "^0.27.4",
+        "vite": "^5.0",
+        "vue": "^3.4.0"
+    },
+    "dependencies": {
+        "@zip.js/zip.js": "^2.7.57",
+        "pinia": "^2.2.6",
+        "tus-js-client": "^4.3.1",
+        "vite-plugin-html": "^3.2.2",
+        "vite-plugin-vue-devtools": "^7.6.4",
+        "vue-toast-notification": "^3.1.3"
+    }
+}

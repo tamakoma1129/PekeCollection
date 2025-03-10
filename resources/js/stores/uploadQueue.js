@@ -1,0 +1,91 @@
+import { defineStore } from "pinia";
+import * as tus from "tus-js-client";
+import {router} from "@inertiajs/vue3";
+
+export const useUploadQueueStore = defineStore("uploadQueue", {
+    state: () => ({
+        files: [],
+        csrfToken: null,
+    }),
+    actions: {
+        setCsrfToken(token) {
+            this.csrfToken = token;
+        },
+
+        addFile(file) {
+            this.files.push({
+                file: file,
+                name: file.name,
+                status: "待機中",
+                errorMessage: null,
+                progress: 0,
+                uploadInstance: null,
+            });
+        },
+
+        startTusUpload(index) {
+            const item = this.files[index];
+            if (!item || !item.file) {
+                return;
+            }
+
+            item.status = "アップロード中";
+            item.errorMessage = null;
+            item.progress = 0;
+
+            const upload = new tus.Upload(item.file, {
+                endpoint: "http://"+window.location.hostname+":1080/uploads/",
+                retryDelays: [2000],
+                metadata: {
+                    filename: item.file.name,
+                    mimetype: item.file.type,
+                },
+                onBeforeRequest: (req) => {
+                    const xhr = req.getUnderlyingObject();
+                    xhr.withCredentials = true;
+                    xhr.setRequestHeader("X-CSRF-TOKEN", this.csrfToken);
+                },
+                onProgress: (bytesSent, bytesTotal) => {
+                    item.progress = (bytesSent / bytesTotal) * 100;
+                },
+                onSuccess: () => {
+                    item.status = "アップロード成功";
+                    // メモリ解放（ファイル本体を空にする）
+                    item.file = null;
+                    item.uploadInstance = null;
+
+                    // 本当は再読み込み(reset)せずに更新したいが、少しやっかいそうなので一旦resetする方針で
+                    router.reload({ reset: ['medias'], only: ["medias"]})
+                },
+                onError: (error) => {
+                    item.status = "アップロード失敗";
+                    item.errorMessage = error ? error.toString() : "アップロード中にエラーが発生しました";
+                },
+            });
+
+            // インスタンスを保持しておき、一時停止・再開で再利用
+            item.uploadInstance = upload;
+
+            upload.start();
+        },
+
+        pauseUpload(index) {
+            const item = this.files[index];
+            if (item?.uploadInstance && item.status === "アップロード中") {
+                item.uploadInstance.abort();
+                item.status = "一時停止";
+            }
+        },
+
+        resumeUpload(index) {
+            const item = this.files[index];
+            if (item?.uploadInstance && item.status === "一時停止") {
+                item.status = "アップロード中";
+                item.uploadInstance.start();
+            }
+        },
+        clearQueue() {
+            this.files = [];
+        },
+    },
+});

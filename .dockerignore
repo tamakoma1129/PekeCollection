@@ -1,0 +1,6 @@
+node_modules
+vendor
+storage/app/*
+database/*.sqlite*
+.git
+.env

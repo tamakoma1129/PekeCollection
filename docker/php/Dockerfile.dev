@@ -1,0 +1,60 @@
+FROM php:8.2-cli
+
+# git : Laravelをgit pullする為
+# unzip : Composerに必要。解凍するもの。
+# libzip-dev : zipに必要。
+# libsqlite3-dev : SQLiteに必要
+# libonig-dev : mbstringに必要。
+# zlib1g-dev : libpngに必要
+# libpng-dev : GDに必要
+# libjpeg62-turbo-dev : GDに必要。高速版。
+# libwebp-dev : GDに必要
+# ffmpeg : laravel-ffmpegに必要
+# procps : Laravel Pulseで必要
+# supervisor : pulse:checkを常時稼働するのに必要
+# nodejsとnpm : octane --watchのchokidarの関係上同じ空間にnodejs必要
+RUN apt-get update  \
+    && apt-get -y install --no-install-recommends \
+        git \
+        unzip \
+        libzip-dev \
+        libsqlite3-dev \
+        libonig-dev \
+        zlib1g-dev \
+        libpng-dev \
+        libjpeg62-turbo-dev \
+        libwebp-dev \
+        ffmpeg \
+        procps \
+        supervisor \
+        curl \
+        nodejs \
+        npm \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# openswoole : octaneに必要
+# gd : interventionに必要。
+# zip : Laravelのプロジェクト作成に必要。
+# pdo_sqlite : sqliteに必要
+# mbstring : intervetionに必要。
+# exif : intervetionに必要。
+# pcntl : Octaneに必要
+RUN pecl install openswoole \
+    && docker-php-ext-configure gd --with-jpeg --with-webp \
+    && docker-php-ext-install zip pdo_sqlite mbstring exif gd pcntl \
+    && docker-php-ext-enable openswoole
+
+# Supervisorで使う設定ファイルをコピー
+COPY ./docker/supervisor/pulse.conf /etc/supervisor/conf.d/pulse.conf
+
+# Composerのインストール
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# エントリポイントスクリプトのコピー＆権限付与
+COPY ./docker/entrypoint.dev.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 80
+EXPOSE 5173
+ENTRYPOINT ["/entrypoint.sh"]

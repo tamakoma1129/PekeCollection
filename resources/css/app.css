@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+
+html {
+    /* 文字の大きさ */
+    font-size: 14px;
+    /*文字のデフォルトをsumiに*/
+    @apply text-sumi-900
+}
+
+@media (min-width: 480px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    /*文字の折り返し*/
+    overflow-wrap: anywhere;
+}
+
+@tailwind utilities;

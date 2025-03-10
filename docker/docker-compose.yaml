@@ -1,0 +1,61 @@
+services:
+  octane:
+    container_name: octane-container
+    build:
+      context: ../
+      dockerfile: docker/php/Dockerfile
+    environment:
+      - APP_ROLE=octane
+      - PULSE_SERVER_NAME=octane
+    ports:
+      - "80:80"
+    volumes:
+      - "../storage:/PekeCollection/storage"
+      - "./octane/php.ini:/usr/local/etc/php/php.ini"
+    networks:
+      - backend
+    entrypoint: "/entrypoint.sh"
+    restart: always
+
+  queue-worker:
+    container_name: queue-worker-container
+    build:
+      context: ../
+      dockerfile: docker/php/Dockerfile
+    environment:
+      - APP_ROLE=queue-worker
+      - PULSE_SERVER_NAME=queue-worker
+    volumes:
+      - "../storage:/PekeCollection/storage"
+      - "./queue-worker/php.ini:/usr/local/etc/php/php.ini"
+    networks:
+      - backend
+    command: "/entrypoint.sh"
+    restart: always
+
+  tus:
+    container_name: tus-container
+    image: tusproject/tusd:latest
+    ports:
+      - "1080:1080"
+    volumes:
+      - ../storage/app/private:/private
+    networks:
+      - backend
+    command:
+      [
+        "--port=1080",
+        "--hooks-http=http://octane/api/tusd-hooks",
+        "--hooks-http-forward-headers=X-CSRF-TOKEN,Cookie",
+        "--upload-dir=/private",
+        "--base-path=/uploads",
+        "--cors-allow-origin=^http:\\/\\/(127\\.0\\.0\\.1|192\\.168\\.11\\.100)$", # カンマ区切りではなく、正規表現で表現が必要
+        "--cors-allow-credentials",
+        "--cors-allow-headers=X-CSRF-TOKEN"
+      ]
+    working_dir: /private
+    restart: always
+
+networks:
+  backend:
+    driver: bridge

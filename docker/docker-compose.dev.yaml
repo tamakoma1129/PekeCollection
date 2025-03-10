@@ -1,0 +1,66 @@
+services:
+  octane:
+    container_name: octane-container-dev
+    build:
+      context: ../
+      dockerfile: docker/php/Dockerfile.dev
+    environment:
+      - APP_ROLE=octane
+      - PULSE_SERVER_NAME=octane
+      - APP_ENV=local
+    ports:
+      - "80:80"
+      - "5173:5173"
+    volumes:
+      - ../:/PekeCollection
+      - "./octane/php.ini:/usr/local/etc/php/php.ini"
+    networks:
+      - backend
+    user: "1000:1000"
+    working_dir: /PekeCollection
+    entrypoint: "/entrypoint.sh"
+
+  queue-worker:
+    container_name: queue-worker-container-dev
+    build:
+      context: ../
+      dockerfile: docker/php/Dockerfile.dev
+    environment:
+      - APP_ROLE=queue-worker
+      - PULSE_SERVER_NAME=queue-worker
+      - APP_ENV=local
+    volumes:
+      - ../:/PekeCollection
+      - "./queue-worker/php.ini:/usr/local/etc/php/php.ini"
+    networks:
+      - backend
+    user: "1000:1000"
+    working_dir: /PekeCollection
+    entrypoint: "/entrypoint.sh"
+
+  tus:
+    container_name: tus-container
+    image: tusproject/tusd:latest
+    ports:
+      - "1080:1080"
+    volumes:
+      - ../storage/app/private:/private
+    networks:
+      - backend
+    user: "1000:1000"
+    command:
+      [
+        "--port=1080",
+        "--hooks-http=http://octane/api/tusd-hooks",
+        "--hooks-http-forward-headers=X-CSRF-TOKEN,Cookie",
+        "--upload-dir=/private",
+        "--base-path=/uploads",
+        "--cors-allow-origin=^http:\\/\\/(127\\.0\\.0\\.1|192\\.168\\.11\\.100)$", # カンマ区切りではなく、正規表現で表現が必要
+        "--cors-allow-credentials",
+        "--cors-allow-headers=X-CSRF-TOKEN"
+      ]
+    working_dir: /private
+
+networks:
+  backend:
+    driver: bridge
