@@ -16,7 +16,6 @@ services:
       - "./octane/php.ini:/usr/local/etc/php/php.ini"
     networks:
       - backend
-    user: "1000:1000"
     working_dir: /PekeCollection
     entrypoint: "/entrypoint.sh"
 
@@ -34,7 +33,6 @@ services:
       - "./queue-worker/php.ini:/usr/local/etc/php/php.ini"
     networks:
       - backend
-    user: "1000:1000"
     working_dir: /PekeCollection
     entrypoint: "/entrypoint.sh"
 
@@ -47,7 +45,6 @@ services:
       - ../storage/app/private:/private
     networks:
       - backend
-    user: "1000:1000"
     command:
       [
         "--port=1080",
