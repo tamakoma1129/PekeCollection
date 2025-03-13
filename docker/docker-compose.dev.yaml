@@ -1,6 +1,7 @@
 services:
   octane:
     container_name: octane-container-dev
+    image: octane-container-dev
     build:
       context: ../
       dockerfile: docker/php/Dockerfile.dev
@@ -21,6 +22,7 @@ services:
 
   queue-worker:
     container_name: queue-worker-container-dev
+    image: queue-worker-container-dev
     build:
       context: ../
       dockerfile: docker/php/Dockerfile.dev
