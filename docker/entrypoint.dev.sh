@@ -15,6 +15,7 @@ if [ "$APP_ROLE" = "octane" ]; then
     if [ ! -f "storage/database.sqlite" ]; then
         echo "'storage/database.sqlite' が無いため作成します。"
         touch storage/database.sqlite
+        php artisan migrate --force
     fi
 
     /usr/bin/supervisord -c /etc/supervisor/supervisord.conf &
