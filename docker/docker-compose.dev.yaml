@@ -49,6 +49,7 @@ services:
       - "${STORAGE_DIR_PRIVATE:?Error: STORAGE_DIR_PRIVATE is not set}:/private"
     networks:
       - backend
+    user: "0:0" # 0:0を明示的に指定しないと、1000:1000にて動作する。ファイル権限エラーになる可能性あり
     command:
       [
         "--port=1080",
