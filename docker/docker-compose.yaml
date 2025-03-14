@@ -13,6 +13,7 @@ services:
     volumes:
       - "../storage:/PekeCollection/storage"
       - "./octane/php.ini:/usr/local/etc/php/php.ini"
+      - "${STORAGE_DIR_PRIVATE:?Error: STORAGE_DIR_PRIVATE is not set}:/PekeCollection/storage/app/private"
     networks:
       - backend
     entrypoint: "/entrypoint.sh"
@@ -30,6 +31,7 @@ services:
     volumes:
       - "../storage:/PekeCollection/storage"
       - "./queue-worker/php.ini:/usr/local/etc/php/php.ini"
+      - "${STORAGE_DIR_PRIVATE:?Error: STORAGE_DIR_PRIVATE is not set}:/PekeCollection/storage/app/private"
     networks:
       - backend
     command: "/entrypoint.sh"
@@ -41,9 +43,10 @@ services:
     ports:
       - "1080:1080"
     volumes:
-      - ../storage/app/private:/private
+      - "${STORAGE_DIR_PRIVATE:?Error: STORAGE_DIR_PRIVATE is not set}:/private"
     networks:
       - backend
+    user: "0:0" # 0:0を明示的に指定しないと、1000:1000にて動作する。ファイル権限エラーになる可能性あり
     command:
       [
         "--port=1080",
