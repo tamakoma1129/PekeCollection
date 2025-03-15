@@ -35,7 +35,7 @@ const togglePlay = () => {
         <img v-if="mediaFile.preview_image_path"
              :src="getPrivateStoragePath(mediaFile.preview_image_path)"
              :alt="mediaFile.title"
-             class="w-full h-auto"
+             class="w-full h-full object-cover object-top"
         />
         <div v-else class="w-full h-full bg-gradient-to-r from-slate-900 to-slate-700"/>
         <button v-if="mediaFile.mediable_type === 'App\\Models\\Audio'"
