@@ -47,15 +47,12 @@ class ProcessImage implements ShouldQueue
                 $extension = pathinfo($filePath, PATHINFO_EXTENSION);
                 // imageからprev画像を生成
                 $imagePrevPath = $this->imageService->generateImagePrev(MediaFolderTypes::IMAGES, $uniqueBaseName, $filePath);
-                // imageから一時置き換え用の低画質画像を生成。prevと全く同じ画像なのは、現時点では仕様。
-                $imageLitePath = "extras/images/{$uniqueBaseName}/lite.webp";
-                $this->imageService->generateLiteImage($filePath, $imageLitePath);
+
                 // 寸法を取得
                 [$width, $height] = $this->imageService->getDimensions($filePath);
 
                 // imagesへ保存
                 $image = new Image();
-                $image->lite_path = $imageLitePath;
                 $image->extension = $extension;
                 $image->width = $width;
                 $image->height = $height;

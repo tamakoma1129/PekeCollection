@@ -59,7 +59,7 @@ export const useMediaStore = defineStore("media2", () => {
                 break
             case "App\\Models\\Image":
                 isPlaying.value = false;
-                srcLite.value = getPrivateStoragePath(media.mediable.lite_path);
+                srcLite.value = getPrivateStoragePath(media.preview_image_path);
                 break
             default:
                 console.warn("対応していないメディアタイプです");

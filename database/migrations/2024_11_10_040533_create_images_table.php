@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('images', function (Blueprint $table) {
             $table->id();
-            $table->string('lite_path');
             $table->string('extension', 10);
             $table->integer("width");
             $table->integer("height");
