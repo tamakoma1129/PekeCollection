@@ -32,7 +32,7 @@ class ProcessMangaUpload implements ShouldQueue
 
         try {
             foreach ($mangaPages as $page) {
-                $imageService->generateThumbnail($page->path ,$page->lite_path);
+                $imageService->generateLiteImage($page->path ,$page->lite_path);
             }
         } catch (\Throwable $e) {
             // 保存済みのMangaがある場合は削除

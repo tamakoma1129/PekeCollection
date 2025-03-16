@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
  * @property int $id
- * @property string $lite_path
  * @property string $extension
  * @property string $dimensions
  * @property \DateTime|null $created_at

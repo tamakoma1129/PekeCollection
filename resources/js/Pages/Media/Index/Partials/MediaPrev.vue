@@ -35,7 +35,7 @@ const togglePlay = () => {
         <img v-if="mediaFile.preview_image_path"
              :src="getPrivateStoragePath(mediaFile.preview_image_path)"
              :alt="mediaFile.title"
-             class="w-full h-auto"
+             class="w-full h-full object-cover object-top"
         />
         <div v-else class="w-full h-full bg-gradient-to-r from-slate-900 to-slate-700"/>
         <button v-if="mediaFile.mediable_type === 'App\\Models\\Audio'"
@@ -51,7 +51,7 @@ const togglePlay = () => {
                 @click="() => {toggleOpenMediaSpace(); setMedia(mediaFile);}" class="absolute inset-0 flex items-center justify-center group">
             <!-- Videoのカバー -->
             <span  class="flex group-hover:bg-black h-full w-full items-center justify-center overflow-hidden">
-                <img :src="getPrivateStoragePath(mediaFile.mediable.preview_video_path)" alt="Videoのホバー時カバー" class="hidden group-hover:block my-auto mx-auto">
+                <img :src="getPrivateStoragePath(mediaFile.mediable.preview_video_path)" alt="Videoのホバー時カバー" class="hidden group-hover:block my-auto mx-auto w-full h-full object-scale-down" />
                 <i-pepicons-pop-clapperboard class="w-24 h-24 absolute top-0 right-0 box-content bg-blue-500 p-4 text-white drop-shadow-xl" />
             </span>
         </button>

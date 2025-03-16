@@ -11,7 +11,12 @@ use Intervention\Image\ImageManager;
 
 class ImageService
 {
-    public function getDimensions(string $path, ?string $readDisk="private")
+    /**
+     * @param string $path
+     * @param string|null $readDisk
+     * @return array
+     */
+    public function getDimensions(string $path, ?string $readDisk="private"): array
     {
         $manager = new ImageManager(new Driver());
         $image = $manager->read(Storage::disk($readDisk)->path($path));
@@ -31,36 +36,14 @@ class ImageService
     {
         $savePath = "extras/{$types->value}/{$fileName}/prev.webp";
 
-        if (!Storage::disk($readDisk)->exists($readPath)) {
-            throw new FileNotFoundException("disk:{$readDisk} でファイルが見つかりません path:{$readPath}");
-        }
-
-        $manager = new ImageManager(new Driver());
-        $image = $manager->read(Storage::disk($readDisk)->path($readPath));
-
-        $width = $image->width();
-        $height = $image->height();
-
-        if ($width >= $height) {
-            // 画面上部中心で一対一比率で切り抜く。pixivの方式を参考にした(人物写真は中央上部にフォーカスが当たりやすいっぽい)。
-            $image->crop($height, $height, round(($width/2)-($height/2)), 0);
-        } else {
-            $image->crop($width, $width, 0, 0);
-        }
-
-        $image->resizeDown(300,300);
-
-        $pointer = $image->toWebp()->toFilePointer();
-        Storage::disk($readDisk)->put($savePath, $pointer);
+        $this->generateLiteImage($readPath, $savePath, readDisk: $readDisk);
 
         return $savePath;
     }
 
     /**
-     * こちらのgenerateThumbnailは画像を一時的に置き換えるときに使う軽量画像を作成するもの。
-     * 上のgenerateImagePrevは、index画面で映す軽量画像を作成するもの。
-     *
-     * 後々統合する予定だが、一旦別々で作成している。
+     * 画像比率はそのままで、画質を下げwebp変換するもの。
+     * 画像の一時置き換えや、プレビュー用。
      *
      * @param string $readPath
      * @param string $savePath
@@ -68,20 +51,27 @@ class ImageService
      * @param string|null $saveDisk
      * @return void
      */
-    public function generateThumbnail(
+    public function generateLiteImage(
         string $readPath,
         string $savePath,
         ?string $readDisk="private",
         ?string $saveDisk="private"
     ): void
     {
+        if (!Storage::disk($readDisk)->exists($readPath)) {
+            throw new \Exception("disk:{$readDisk} でファイルが見つかりません path:{$readPath}");
+        }
+
         $manager = new ImageManager(new Driver());
         $image = $manager->read(Storage::disk($readDisk)->path($readPath));
         $quality = 70;
 
-        $image
-            ->scaleDown(400, 400)
-            ->toWebp($quality)
-            ->save(Storage::disk($saveDisk)->path($savePath));
+        $pointer = $image
+                    ->scaleDown(400, 400)
+                    ->toWebp($quality)
+                    ->toFilePointer();
+
+        // LaravelのStorage::diskならフォルダが存在しないとき作ってくれるので。
+        Storage::disk($saveDisk)->put($savePath, $pointer);
     }
 }
