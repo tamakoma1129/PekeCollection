@@ -76,11 +76,11 @@ test('パスワード変更のバリデーションパスチェック', function
         ]))
         ->assertSessionHasNoErrors();
 })
-->with([
-    "password",
-    fn() => Str::random(8),
-    fn() => Str::random(1000),
-]);
+    ->with([
+        "password",
+        fn() => Str::random(8),
+        fn() => Str::random(1000),
+    ]);
 
 test('パスワード変更のバリデーションエラーチェック', function (
     string $inputField,
