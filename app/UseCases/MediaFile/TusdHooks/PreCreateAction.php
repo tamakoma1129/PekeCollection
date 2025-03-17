@@ -6,8 +6,6 @@ use App\Http\Requests\MediaFile\TusdHookRequest;
 use App\Services\File\FileService;
 use Symfony\Component\Mime\MimeTypes;
 
-use function PHPUnit\Framework\matches;
-
 class PreCreateAction
 {
     protected FileService $fileService;
@@ -36,17 +34,16 @@ class PreCreateAction
         $fileSize = $request->input("Event.Upload.Size");
 
         if (!$fileName || !$mimeType || !$fileSize) {
-            return response()->json(["status" => 422, "message" => "Missing required fields"], 422);
+            return $this->rejectUpload(422, "必須のフィールドがありません。");
         }
-
         if (!$this->isValidFilename($fileName)) {
-            return $this->rejectUpload(422, "ファイル名の長さは".self::MAX_FILENAME_LENGTH."文字までです");
+            return $this->rejectUpload(422, "ファイル名の長さは".self::MAX_FILENAME_LENGTH."文字までです。");
         }
         if (!$this->isValidFileSize($fileSize)) {
-            return $this->rejectUpload(422, "アップロードできるファイルのサイズは". self::MAX_FILE_SIZE_GB ."GBまでです");
+            return $this->rejectUpload(422, "アップロードできるファイルのサイズは". self::MAX_FILE_SIZE_GB ."GBまでです。");
         }
         if (!$this->isValidFileType($mimeType)) {
-            return $this->rejectUpload(422, "このファイル形式には対応していません");
+            return $this->rejectUpload(422, "このファイル形式には対応していません。");
         }
 
         // 漫画の場合は先に一意のフォルダ名を作り、そのフォルダ名で作っておく。
