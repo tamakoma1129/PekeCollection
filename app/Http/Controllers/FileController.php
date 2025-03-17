@@ -9,7 +9,7 @@ class FileController extends Controller
     public function show(string $path="")
     {
         if ($path==="") abort(404);
-        if (!Storage::disk("private")->exists($path)) abort(404);
+        if (! Storage::disk("private")->exists($path)) abort(404);
 
         $filePath = Storage::disk("private")->path($path);
 
