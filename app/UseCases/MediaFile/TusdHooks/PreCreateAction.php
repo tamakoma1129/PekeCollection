@@ -77,6 +77,12 @@ class PreCreateAction
     private function isValidFileType(string $filetype): bool
     {
         $majorType = explode( "/", $filetype)[0];
+
+        // 拡張子がわからないものは✗
+        $mimeTypes = new MimeTypes();
+        $extensions = $mimeTypes->getExtensions($filetype);
+        if(count($extensions) === 0) return false;
+
         // メジャータイプがALLOWED_MIME_MAJOR_TYPESに含まれてるか、MimetypeがALLOWED_MIME_TYPESに含まれてるならおｋ
         return in_array($majorType, self::ALLOWED_MIME_MAJOR_TYPES, true) || in_array($filetype, self::ALLOWED_MIME_TYPES, true);
     }
