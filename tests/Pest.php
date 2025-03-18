@@ -48,3 +48,24 @@ function login($user = null)
     test()->actingAs($user);
     return $user;
 }
+
+// tusdHookから送られるPayload
+function createFromTusdPayload(
+    string $type,
+    string|Closure $fileName,
+    string $mimeType,
+    string $fileSize
+) {
+    return [
+        'Type' => $type,
+        "Event" => [
+            "Upload" => [
+                "MetaData" => [
+                    "filename" => $fileName,
+                    "mimetype" => $mimeType
+                ],
+                "Size" => $fileSize
+            ]
+        ]
+    ];
+}
