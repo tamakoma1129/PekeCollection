@@ -46,14 +46,15 @@ class PreCreateAction
             return $this->rejectUpload(422, "このファイル形式には対応していません。");
         }
 
-        // 漫画の場合は先に一意のフォルダ名を作り、そのフォルダ名で作っておく。
+        // 漫画の場合は先に一意のフォルダ作成 + それに合わせたzipファイルパスのレスポンス
+        // フォルダを先に作成することで、漫画処理が複数続いてもファイル名が被らないようにしている。
         if ($mimeType === "application/zip") {
             $folderPath = $this->generateUniqueFolderPath($fileName);
             $this->fileService->makeDirectory($folderPath);
+            $path ="$folderPath.zip";
+        } else {
+            $path = $this->generateUniquePath($fileName, $mimeType);
         }
-
-        $path = $this->generateUniquePath($fileName, $mimeType);
-
         return response()->json([
             "status" => 200,
             "ChangeFileInfo" => [
@@ -62,6 +63,7 @@ class PreCreateAction
                 ]
             ],
         ]);
+
     }
 
     private function isValidFilename(string $filename): bool
