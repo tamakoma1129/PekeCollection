@@ -170,8 +170,9 @@ test('漫画の場合、事前にフォルダが作成される', function () {
     Storage::fake('private');
 
     login();
-    $fileName = "漫画.zip";
-    $expectFolderPath = "uploads/mangas/漫画";
+    $baseName = Str::random(random_int(1,100));
+    $fileName = "$baseName.zip";
+    $expectFolderPath = "uploads/mangas/$baseName";
     $payload = createFromTusdPayload(
         "pre-create",
         $fileName,
@@ -188,7 +189,7 @@ test('漫画の場合、事前にフォルダが作成される', function () {
         [
             "ChangeFileInfo" => [
                 "Storage" => [
-                    "Path" => "./uploads/mangas/漫画.zip"
+                    "Path" => "./uploads/mangas/$baseName.zip"
                 ]
             ]
         ]
