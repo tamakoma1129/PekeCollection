@@ -68,3 +68,28 @@ function preCreatePayload(
         ]
     ];
 }
+
+function postFinishPayload(
+    string $fileName,
+    string $mimeType,
+    string $fileSize,
+    string $path,
+    string $infoPath
+) {
+    return [
+        'Type' => "post-finish",
+        "Event" => [
+            "Upload" => [
+                "MetaData" => [
+                    "filename" => $fileName,
+                    "mimetype" => $mimeType
+                ],
+                "Size" => $fileSize,
+                "Storage" => [
+                    "InfoPath" => $infoPath,
+                    "Path" => $path
+                ]
+            ]
+        ]
+    ];
+}
