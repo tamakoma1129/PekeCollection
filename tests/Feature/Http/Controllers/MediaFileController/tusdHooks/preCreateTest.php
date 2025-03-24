@@ -166,16 +166,158 @@ test('pre-createのバリデーションエラーチェック', function (
         ]
     ]);
 
+test('漫画以外のファイル名が重複したら、インクリメントしたパスを返す', function (
+    string $mediaType,
+    string $baseName,
+    string $mimeType
+) {
+    Storage::fake('private');
+
+    login();
+    $payload = createFromTusdPayload(
+        "pre-create",
+        $baseName,
+        $mimeType,
+        10000,
+    );
+
+    Storage::disk("private")->put("./uploads/$mediaType/$baseName", "dummy");
+
+    $response = postJson(route("tusd-hooks"), $payload);
+
+    $response->assertOk();
+    $incrementFileName = pathinfo($baseName, PATHINFO_FILENAME)."(1).".pathinfo($baseName, PATHINFO_EXTENSION);
+    expect($response->json())->toMatchArray([
+        "ChangeFileInfo" => [
+            "Storage" => [
+                "Path" => "./uploads/$mediaType/$incrementFileName"
+            ]
+        ]
+    ]);
+})
+    ->with([
+        ["images", "image.png", "image/png"],
+        ["audios", "audio.mp3", "audio/mpeg"],
+        ["videos", "video.mp4", "video/mp4"],
+    ]);
+
+test('漫画以外のファイル名が複数個重複したら、インクリメントしたパスを返す', function (
+    string $mediaType,
+    string $baseName,
+    string $mimeType
+) {
+    Storage::fake('private');
+
+    login();
+    $fileName = pathinfo($baseName, PATHINFO_FILENAME);
+    $extension = pathinfo($baseName, PATHINFO_EXTENSION);
+    // アップロードするファイル名自体はインクリメントしていないファイル名
+    $payload = createFromTusdPayload(
+        "pre-create",
+        $baseName,
+        $mimeType,
+        10000,
+    );
+
+    $generateNum = random_int(1, 100);
+    Storage::disk("private")->put("./uploads/$mediaType/$baseName", "dummy");
+    for ($i = 1; $i <= $generateNum; $i++) {
+        Storage::disk("private")->put("./uploads/$mediaType/$fileName($i).$extension", "dummy");
+    }
+
+    $response = postJson(route("tusd-hooks"), $payload);
+
+    $response->assertOk();
+    $incrementNum = $generateNum + 1;
+    $incrementFileName = $fileName."($incrementNum).$extension";
+    expect($response->json())->toMatchArray([
+        "ChangeFileInfo" => [
+            "Storage" => [
+                "Path" => "./uploads/$mediaType/$incrementFileName"
+            ]
+        ]
+    ]);
+})
+    ->with([
+        ["images", "image.png", "image/png"],
+        ["audios", "audio.mp3", "audio/mpeg"],
+        ["videos", "video.mp4", "video/mp4"],
+    ]);
+
+/**
+ * 漫画の場合は、zipではなく展開後のフォルダ名が重複するかを見ないといけない
+ */
+test('漫画のファイル名が重複したら、インクリメントしたパスを返す', function () {
+    Storage::fake('private');
+
+    login();
+    $fileName = Str::random(random_int(1, 100));
+    $payload = createFromTusdPayload(
+        "pre-create",
+        "$fileName.zip",
+        "application/zip",
+        10000,
+    );
+
+    // 漫画の場合は、zipではなく展開後のフォルダ名が展開するかを見ないといけないので、ディレクトリを作成
+    Storage::disk("private")->makeDirectory("./uploads/mangas/$fileName");
+
+    $response = postJson(route("tusd-hooks"), $payload);
+
+    $response->assertOk();
+    $incrementFileName = "$fileName(1)";
+    expect($response->json())->toMatchArray([
+        "ChangeFileInfo" => [
+            "Storage" => [
+                "Path" => "./uploads/mangas/$incrementFileName.zip"
+            ]
+        ]
+    ]);
+});
+
+test('漫画のファイル名が複数個重複したら、インクリメントしたパスを返す', function () {
+    Storage::fake('private');
+
+    login();
+    $fileName = Str::random(random_int(1, 100));
+    // アップロードするファイル名自体はインクリメントしていないファイル名
+    $payload = createFromTusdPayload(
+        "pre-create",
+        "$fileName.zip",
+        "application/zip",
+        10000,
+    );
+
+    $generateNum = random_int(1, 100);
+    Storage::disk("private")->makeDirectory("./uploads/mangas/$fileName");
+    for ($i = 1; $i <= $generateNum; $i++) {
+        Storage::disk("private")->makeDirectory("./uploads/mangas/$fileName($i)");
+    }
+
+    $response = postJson(route("tusd-hooks"), $payload);
+
+    $response->assertOk();
+    $incrementNum = $generateNum + 1;
+    $incrementFileName = $fileName."($incrementNum)";
+    expect($response->json())->toMatchArray([
+        "ChangeFileInfo" => [
+            "Storage" => [
+                "Path" => "./uploads/mangas/$incrementFileName.zip"
+            ]
+        ]
+    ]);
+});
+
 test('漫画の場合、事前にフォルダが作成される', function () {
     Storage::fake('private');
 
     login();
-    $baseName = Str::random(random_int(1,100));
-    $fileName = "$baseName.zip";
-    $expectFolderPath = "uploads/mangas/$baseName";
+    $fileName = Str::random(random_int(1, 100));
+    $baseName = "$fileName.zip";
+    $expectFolderPath = "uploads/mangas/$fileName";
     $payload = createFromTusdPayload(
         "pre-create",
-        $fileName,
+        $baseName,
         "application/zip",
         10000
     );
@@ -189,7 +331,7 @@ test('漫画の場合、事前にフォルダが作成される', function () {
         [
             "ChangeFileInfo" => [
                 "Storage" => [
-                    "Path" => "./uploads/mangas/$baseName.zip"
+                    "Path" => "./uploads/mangas/$fileName.zip"
                 ]
             ]
         ]
@@ -197,6 +339,48 @@ test('漫画の場合、事前にフォルダが作成される', function () {
     $this->assertTrue(Storage::disk("private")->directoryExists($expectFolderPath));
 });
 
-test('ファイル名が重複したら上書きせず、インクリメントする', function () {
+test('漫画のファイル名が重複したら、事前作成フォルダがインクリメントする', function () {
+    Storage::fake('private');
+
+    login();
+    $fileName = Str::random(random_int(1, 100));
+
+    $generateNum = random_int(1, 100);
+    Storage::disk("private")->makeDirectory("./uploads/mangas/$fileName");
+    for ($i = 1; $i <= $generateNum; $i++) {
+        Storage::disk("private")->makeDirectory("./uploads/mangas/$fileName($i)");
+    }
+    $payload = createFromTusdPayload(
+        "pre-create",
+        "$fileName.zip",
+        "application/zip",
+        10000
+    );
+
+    $response = postJson(route("tusd-hooks"), $payload);
+
+    $response->assertOk();
+    $incrementNum = $generateNum + 1;
+    $this->assertTrue(Storage::disk("private")->directoryExists("./uploads/mangas/$fileName($incrementNum)"));
 });
 
+test('漫画のファイル名が複数重複したら、事前作成フォルダがインクリメントする', function () {
+    Storage::fake('private');
+
+    login();
+    $fileName = Str::random(random_int(1, 100));
+    $baseName = "$fileName.zip";
+    Storage::makeDirectory("uploads/mangas/$fileName");
+    $payload = createFromTusdPayload(
+        "pre-create",
+        $baseName,
+        "application/zip",
+        10000
+    );
+
+    $response = postJson(route("tusd-hooks"), $payload);
+
+    $response->assertOk();
+    $this->assertTrue(Storage::disk("private")->directoryExists("./uploads/mangas/$fileName(1)"));
+    $this->assertTrue(Storage::disk("private")->directoryExists("./uploads/mangas/$fileName"));
+});
