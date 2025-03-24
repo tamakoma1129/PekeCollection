@@ -178,17 +178,17 @@ class ProcessManga implements ShouldQueue
         return $fileNames;
     }
 
-    private function validation($fullImagePath, $index)
+    private function validation($dirFullPath, $index)
     {
-        if (!is_file($fullImagePath)) {
-            throw new \Exception("ファイルが存在しませんでした: {$fullImagePath}");
+        if (!is_file($dirFullPath)) {
+            throw new \Exception("ファイルが存在しませんでした: {$dirFullPath}");
         }
-        if (pathinfo($fullImagePath, PATHINFO_FILENAME) != $index+1) {
-            throw new \Exception("ファイル名が連番ではありませんでした: {$fullImagePath} != {$index}");
+        if (pathinfo($dirFullPath, PATHINFO_FILENAME) != $index+1) {
+            throw new \Exception("ファイル名が連番ではありませんでした: {$dirFullPath} != {$index}");
         }
-        $mimeType = mime_content_type($fullImagePath);
+        $mimeType = mime_content_type($dirFullPath);
         if (explode('/', $mimeType)[0] !== 'image') {
-            throw new \Exception("漫画ファイルが画像ではありませんでした: {$fullImagePath}");
+            throw new \Exception("漫画ファイルが画像ではありませんでした: {$dirFullPath}");
         }
     }
 }
