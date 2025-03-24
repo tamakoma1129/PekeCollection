@@ -30,6 +30,29 @@ test('音源が投稿でき、dbに保存される', function () {
     $this->assertDatabaseCount("media_files", 1);
 });
 
+test('ゲストは音源が投稿できない', function () {
+    auth()->logout();
+
+    $this->assertGuest();
+    $baseName = "audio.mp3";
+    $path = "/private/uploads/audios/$baseName";
+    Storage::disk('private')->put("uploads/audios/$baseName", file_get_contents(base_path("tests/Data/sample.mp3")));
+
+    $payload = postFinishPayload(
+        $baseName,
+        "audio/mpeg",
+        10000,
+        $path,
+        $this->pathInfo
+    );
+    $response = $this->postJson(route("tusd-hooks"), $payload);
+
+    $response->assertUnauthorized();
+
+    $this->assertDatabaseCount("audios", 0);
+    $this->assertDatabaseCount("media_files", 0);
+});
+
 test('音源が投稿でき、infoファイルが削除される', function () {
     $baseName = "audio.mp3";
     $path = "/private/uploads/audios/$baseName";
@@ -77,28 +100,6 @@ test('音源の拡張子を取得できる', function (
         ["flac", "sample.flac"],
     ]);
 
-test('ゲストは音源が投稿できない', function () {
-    auth()->logout();
-
-    $this->assertGuest();
-    $baseName = "audio.mp3";
-    $path = "/private/uploads/audios/$baseName";
-    Storage::disk('private')->put("uploads/audios/$baseName", file_get_contents(base_path("tests/Data/sample.mp3")));
-
-    $payload = postFinishPayload(
-        $baseName,
-        "audio/mpeg",
-        10000,
-        $path,
-        $this->pathInfo
-    );
-    $response = $this->postJson(route("tusd-hooks"), $payload);
-
-    $response->assertUnauthorized();
-
-    $this->assertDatabaseCount("audios", 0);
-    $this->assertDatabaseCount("media_files", 0);
-});
 
 test('audioの長さを取得できる', function () {
     $baseName = "audio.mp3";
