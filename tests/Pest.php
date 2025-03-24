@@ -50,14 +50,13 @@ function login($user = null)
 }
 
 // tusdHookから送られるPayload
-function createFromTusdPayload(
-    string $type,
+function preCreatePayload(
     string|Closure $fileName,
     string $mimeType,
     string $fileSize
 ) {
     return [
-        'Type' => $type,
+        'Type' => "pre-create",
         "Event" => [
             "Upload" => [
                 "MetaData" => [

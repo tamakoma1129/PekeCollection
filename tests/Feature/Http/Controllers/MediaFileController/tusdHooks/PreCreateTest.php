@@ -15,8 +15,7 @@ test('pre-createからのレスポンスが期待通り', function (string $mime
     $mimeTypes = new MimeTypes();
     $extension = $mimeTypes->getExtensions($mimeType)[0];
 
-    $payload = createFromTusdPayload(
-        "pre-create",
+    $payload = preCreatePayload(
         $fileName,
         $mimeType,
         $fileSize,
@@ -57,8 +56,7 @@ test("ゲストだとpre-createできない", function () {
     Storage::fake('private');
 
     $this->assertGuest();
-    $payload = createFromTusdPayload(
-        "pre-create",
+    $payload = preCreatePayload(
         "fileName.png",
         "image/png",
         10000
@@ -87,14 +85,12 @@ test('pre-createの境界値バリデーションパスチェック', function (
         ->toHaveKey("ChangeFileInfo");
 })
     ->with([
-        fn() => createFromTusdPayload(
-            "pre-create",
+        fn() => preCreatePayload(
             Str::random(124) . ".png",
             "image/png",
             10000
         ),
-        fn() => createFromTusdPayload(
-            "pre-create",
+        fn() => preCreatePayload(
             "fileName.png",
             "image/png",
             124 * 1024 * 1024 * 1024,
@@ -129,8 +125,7 @@ test('pre-createのバリデーションエラーチェック', function (
             "必須のフィールドがありません。"
         ],
         [
-            fn() => createFromTusdPayload(
-                "pre-create",
+            fn() => preCreatePayload(
                 Str::random(125) . ".png",
                 "image/png",
                 10000
@@ -138,8 +133,7 @@ test('pre-createのバリデーションエラーチェック', function (
             "ファイル名の長さは128文字までです。"
         ],
         [
-            fn() => createFromTusdPayload(
-                "pre-create",
+            fn() => preCreatePayload(
                 "filename.png",
                 "image/png",
                 124 * 1024 * 1024 * 1024 + 1,
@@ -147,8 +141,7 @@ test('pre-createのバリデーションエラーチェック', function (
             "アップロードできるファイルのサイズは124GBまでです。"
         ],
         [
-            fn() => createFromTusdPayload(
-                "pre-create",
+            fn() => preCreatePayload(
                 "filename.exe",
                 "application/octet-stream",
                 10000
@@ -156,8 +149,7 @@ test('pre-createのバリデーションエラーチェック', function (
             "このファイル形式には対応していません。"
         ],
         [
-            fn() => createFromTusdPayload(
-                "pre-create",
+            fn() => preCreatePayload(
                 "fakeImage.png",
                 "image/fake",
                 10000
@@ -174,8 +166,7 @@ test('漫画以外のファイル名が重複したら、インクリメント�
     Storage::fake('private');
 
     login();
-    $payload = createFromTusdPayload(
-        "pre-create",
+    $payload = preCreatePayload(
         $baseName,
         $mimeType,
         10000,
@@ -212,8 +203,7 @@ test('漫画以外のファイル名が複数個重複したら、インクリ�
     $fileName = pathinfo($baseName, PATHINFO_FILENAME);
     $extension = pathinfo($baseName, PATHINFO_EXTENSION);
     // アップロードするファイル名自体はインクリメントしていないファイル名
-    $payload = createFromTusdPayload(
-        "pre-create",
+    $payload = preCreatePayload(
         $baseName,
         $mimeType,
         10000,
@@ -252,8 +242,7 @@ test('漫画のファイル名が重複したら、インクリメントした�
 
     login();
     $fileName = Str::random(random_int(1, 100));
-    $payload = createFromTusdPayload(
-        "pre-create",
+    $payload = preCreatePayload(
         "$fileName.zip",
         "application/zip",
         10000,
@@ -281,8 +270,7 @@ test('漫画のファイル名が複数個重複したら、インクリメン�
     login();
     $fileName = Str::random(random_int(1, 100));
     // アップロードするファイル名自体はインクリメントしていないファイル名
-    $payload = createFromTusdPayload(
-        "pre-create",
+    $payload = preCreatePayload(
         "$fileName.zip",
         "application/zip",
         10000,
@@ -315,8 +303,7 @@ test('漫画の場合、事前にフォルダが作成される', function () {
     $fileName = Str::random(random_int(1, 100));
     $baseName = "$fileName.zip";
     $expectFolderPath = "uploads/mangas/$fileName";
-    $payload = createFromTusdPayload(
-        "pre-create",
+    $payload = preCreatePayload(
         $baseName,
         "application/zip",
         10000
@@ -350,8 +337,7 @@ test('漫画のファイル名が重複したら、事前作成フォルダが�
     for ($i = 1; $i <= $generateNum; $i++) {
         Storage::disk("private")->makeDirectory("./uploads/mangas/$fileName($i)");
     }
-    $payload = createFromTusdPayload(
-        "pre-create",
+    $payload = preCreatePayload(
         "$fileName.zip",
         "application/zip",
         10000
@@ -371,8 +357,7 @@ test('漫画のファイル名が複数重複したら、事前作成フォル�
     $fileName = Str::random(random_int(1, 100));
     $baseName = "$fileName.zip";
     Storage::makeDirectory("uploads/mangas/$fileName");
-    $payload = createFromTusdPayload(
-        "pre-create",
+    $payload = preCreatePayload(
         $baseName,
         "application/zip",
         10000
