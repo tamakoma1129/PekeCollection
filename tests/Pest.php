@@ -130,10 +130,14 @@ function createTestMangaZip(array $images): string
 
         ob_start();
         switch (strtolower($extension)) {
+            case 'gif':
+                imagegif($img);
             case 'jpg':
             case 'jpeg':
-                imagejpeg($img, null, 80);
+                imagejpeg($img);
                 break;
+            case 'webp':
+                imagewebp($img);
             case 'png':
             default:
                 imagepng($img);
