@@ -18,7 +18,7 @@ class ImageFactory extends Factory
     public function definition(): array
     {
         return [
-            "extension" => "jpg",
+            "extension" => "png",
             "width" => rand(10, 1000),
             "height" => rand(10, 1000),
         ];
