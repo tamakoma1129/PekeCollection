@@ -50,7 +50,7 @@ test('複数タグを複数のメディアに付けられる', function () {
     assertDatabaseCount("media_file_tag", 0);
 
     $mediaIds = $mediaFiles->pluck('id')->toArray();
-    $tagNames = fake()->words(rand(1,10));
+    $tagNames = fake()->unique->words(rand(1,10));
     $form = [
         'media_ids' => $mediaIds,
         'tags' => $tagNames,
