@@ -34,6 +34,8 @@ class PostFinishAction
         }
         else if ($mimeType === "application/zip") {
             ProcessManga::dispatch($uploadData);
+        } else {
+            return response()->json(["status" => 500], 500);
         }
 
         return response()->json(["status" => 200]);

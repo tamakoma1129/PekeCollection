@@ -191,7 +191,9 @@ return [
     */
 
     'attributes' => [
-        "orientation" => "画面向き"
+        "orientation" => "画面向き",
+        "password" => "パスワード",
+        "current_password" => "現在のパスワード",
     ],
 
 ];

@@ -28,10 +28,12 @@ Route::middleware(['auth', CheckUserExists::class])->group(function () {
         return Inertia::render('Manga/MangaUpload');
     })->name('manga.create');
 
-    Route::patch('/media-file/{mediaFile}', [MediaFileController::class, 'update'])->name('media_file.update');
+    Route::patch('/media-file/{mediaFile}', [MediaFileController::class, 'update'])
+        ->name('media_file.update');
 
     Route::delete('/tag', [TagController::class, 'detach'])->name('tag.detach');
-    Route::delete('/media-file', [MediaFileController::class, 'destroy'])->name('media_file.destroy');
+    Route::delete('/media-file', [MediaFileController::class, 'destroy'])
+        ->name('media_file.destroy');
 });
 
 require __DIR__.'/auth.php';

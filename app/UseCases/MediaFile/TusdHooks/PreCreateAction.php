@@ -6,8 +6,6 @@ use App\Http\Requests\MediaFile\TusdHookRequest;
 use App\Services\File\FileService;
 use Symfony\Component\Mime\MimeTypes;
 
-use function PHPUnit\Framework\matches;
-
 class PreCreateAction
 {
     protected FileService $fileService;
@@ -36,27 +34,27 @@ class PreCreateAction
         $fileSize = $request->input("Event.Upload.Size");
 
         if (!$fileName || !$mimeType || !$fileSize) {
-            return response()->json(["status" => 422, "message" => "Missing required fields"], 422);
+            return $this->rejectUpload(422, "必須のフィールドがありません。");
         }
-
         if (!$this->isValidFilename($fileName)) {
-            return $this->rejectUpload(422, "ファイル名の長さは".self::MAX_FILENAME_LENGTH."文字までです");
+            return $this->rejectUpload(422, "ファイル名の長さは".self::MAX_FILENAME_LENGTH."文字までです。");
         }
         if (!$this->isValidFileSize($fileSize)) {
-            return $this->rejectUpload(422, "アップロードできるファイルのサイズは". self::MAX_FILE_SIZE_GB ."GBまでです");
+            return $this->rejectUpload(422, "アップロードできるファイルのサイズは". self::MAX_FILE_SIZE_GB ."GBまでです。");
         }
         if (!$this->isValidFileType($mimeType)) {
-            return $this->rejectUpload(422, "このファイル形式には対応していません");
+            return $this->rejectUpload(422, "このファイル形式には対応していません。");
         }
 
-        // 漫画の場合は先に一意のフォルダ名を作り、そのフォルダ名で作っておく。
+        // 漫画の場合は先に一意のフォルダ作成 + それに合わせたzipファイルパスのレスポンス
+        // フォルダを先に作成することで、漫画処理が複数続いてもファイル名が被らないようにしている。
         if ($mimeType === "application/zip") {
             $folderPath = $this->generateUniqueFolderPath($fileName);
             $this->fileService->makeDirectory($folderPath);
+            $path ="$folderPath.zip";
+        } else {
+            $path = $this->generateUniquePath($fileName, $mimeType);
         }
-
-        $path = $this->generateUniquePath($fileName, $mimeType);
-
         return response()->json([
             "status" => 200,
             "ChangeFileInfo" => [
@@ -65,6 +63,7 @@ class PreCreateAction
                 ]
             ],
         ]);
+
     }
 
     private function isValidFilename(string $filename): bool
@@ -80,6 +79,12 @@ class PreCreateAction
     private function isValidFileType(string $filetype): bool
     {
         $majorType = explode( "/", $filetype)[0];
+
+        // 拡張子がわからないものは✗
+        $mimeTypes = new MimeTypes();
+        $extensions = $mimeTypes->getExtensions($filetype);
+        if(count($extensions) === 0) return false;
+
         // メジャータイプがALLOWED_MIME_MAJOR_TYPESに含まれてるか、MimetypeがALLOWED_MIME_TYPESに含まれてるならおｋ
         return in_array($majorType, self::ALLOWED_MIME_MAJOR_TYPES, true) || in_array($filetype, self::ALLOWED_MIME_TYPES, true);
     }

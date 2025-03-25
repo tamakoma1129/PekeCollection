@@ -48,8 +48,8 @@ class ProcessManga implements ShouldQueue
         $uniqueFolderName = pathinfo($zipRelPath, PATHINFO_FILENAME);
         $dirUploadRelPath = "uploads/mangas/{$uniqueFolderName}/";
         $dirExtraRelPath = "extras/mangas/{$uniqueFolderName}/";
-        $zipFullPath = storage_path("app/private/{$zipRelPath}");
-        $unzipFullPath = storage_path("app/private/".pathinfo($zipRelPath, PATHINFO_DIRNAME)."/". pathinfo($zipRelPath, PATHINFO_FILENAME));
+        $zipFullPath = Storage::disk("private")->path($zipRelPath);
+        $unzipFullPath = Storage::disk("private")->path(pathinfo($zipRelPath, PATHINFO_DIRNAME) . "/" . pathinfo($zipRelPath, PATHINFO_FILENAME));
 
         try {
             $this->unzipManga($zipFullPath, $unzipFullPath);
@@ -63,10 +63,10 @@ class ProcessManga implements ShouldQueue
                 $dirExtraRelPath
             ) {
                 // 解凍先にある名前一覧を昇順で取得(連番・存在・画像であることのバリデーション済み)
-                $fileNames = $this->getUnzippedFiles(storage_path("app/private/{$dirUploadRelPath}"));
+                $fileNames = $this->getUnzippedFiles(Storage::disk("private")->path($dirUploadRelPath));
 
                 $pageAspectSizes = [];
-                $mangaPages      = [];
+                $mangaPages = [];
 
                 foreach ($fileNames as $index => $fileName) {
                     $pageNumber = $index + 1;
@@ -88,7 +88,7 @@ class ProcessManga implements ShouldQueue
                     $mangaPage->path           = $filePath;
                     $mangaPage->lite_path      = $dirExtraRelPath.pathinfo($fileName, PATHINFO_FILENAME).".webp";
                     $mangaPage->file_extension = pathinfo($fileName, PATHINFO_EXTENSION);
-                    $mangaPage->file_size      = filesize(storage_path("app/private/{$filePath}"));
+                    $mangaPage->file_size      = filesize(Storage::disk("private")->path($filePath));
                     $mangaPage->width          = $width;
                     $mangaPage->height         = $height;
 
@@ -101,8 +101,8 @@ class ProcessManga implements ShouldQueue
 
                 // mangaを保存
                 $manga = new Manga();
-                $manga->title  = $title;
-                $manga->width  = $mangaWidth;
+                $manga->title = $title;
+                $manga->width = $mangaWidth;
                 $manga->height = $mangaHeight;
                 $manga->save();
 
@@ -163,7 +163,9 @@ class ProcessManga implements ShouldQueue
         // $allには「.」「..」も含まれるので、indexカウントは自分でやる
         $index = 0;
         foreach ($all as $fileName) {
-            if ($fileName === '.' || $fileName === '..') continue;
+            if ($fileName === '.' || $fileName === '..') {
+                continue;
+            }
 
             $this->validation($dirFullPath . '/' . $fileName, $index);
 
@@ -178,17 +180,17 @@ class ProcessManga implements ShouldQueue
         return $fileNames;
     }
 
-    private function validation($fullImagePath, $index)
+    private function validation($dirFullPath, $index)
     {
-        if (!is_file($fullImagePath)) {
-            throw new \Exception("ファイルが存在しませんでした: {$fullImagePath}");
+        if (!is_file($dirFullPath)) {
+            throw new \Exception("ファイルが存在しませんでした: {$dirFullPath}");
         }
-        if (pathinfo($fullImagePath, PATHINFO_FILENAME) != $index+1) {
-            throw new \Exception("ファイル名が連番ではありませんでした: {$fullImagePath} != {$index}");
+        if (pathinfo($dirFullPath, PATHINFO_FILENAME) != $index + 1) {
+            throw new \Exception("ファイル名が連番ではありませんでした: {$dirFullPath} != {$index}");
         }
-        $mimeType = mime_content_type($fullImagePath);
+        $mimeType = mime_content_type($dirFullPath);
         if (explode('/', $mimeType)[0] !== 'image') {
-            throw new \Exception("漫画ファイルが画像ではありませんでした: {$fullImagePath}");
+            throw new \Exception("漫画ファイルが画像ではありませんでした: {$dirFullPath}");
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 class Video extends Model
 {
+    use HasFactory;
     public function mediaFile(): morphOne
     {
         return $this->morphOne(MediaFile::class, 'mediable');
