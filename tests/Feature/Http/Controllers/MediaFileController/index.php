@@ -27,19 +27,19 @@ test('media-all一覧が閲覧できる', function () {
         ->component('Media/Index/Index')
         ->has('medias', 4)
         ->has('medias.0', fn (Assert $page) => $page
-            ->where('id', $image->id)
+            ->where('mediable_type', $image->mediable_type)
             ->etc()
         )
         ->has('medias.1', fn (Assert $page) => $page
-            ->where('id', $video->id)
+            ->where('mediable_type', $video->mediable_type)
             ->etc()
         )
         ->has('medias.2', fn (Assert $page) => $page
-            ->where('id', $audio->id)
+            ->where('mediable_type', $audio->mediable_type)
             ->etc()
         )
         ->has('medias.3', fn (Assert $page) => $page
-            ->where('id', $manga->id)
+            ->where('mediable_type', $manga->mediable_type)
             ->has("mediable", fn (Assert $page) => $page
                 ->has("pages.0", fn (Assert $page) => $page
                     ->where('id', $mangaPage->id)
