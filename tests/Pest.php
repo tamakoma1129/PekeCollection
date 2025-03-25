@@ -93,3 +93,64 @@ function postFinishPayload(
         ]
     ];
 }
+
+/**
+ * 指定した仕様の画像ファイルをZIPにまとめて保存する関数。
+ * 連番ファイル名 or 任意のファイル名を指定可能。
+ *
+ * @param array<array{0:string,1:string,2?:string}> $images
+ *   例: [
+ *     ['100x100', 'png'],             // → 自動的に "1.png"
+ *     ['100x100', 'jpg', 'cover'],    // → "cover.jpg"
+ *     ['200x300', 'png', 'back'],     // → "back.png"
+ *   ]
+ * @return string ZIPファイルの一時パス
+ * @throws Exception
+ */
+function createTestMangaZip(array $images): string
+{
+    $tempZipPath = tempnam(sys_get_temp_dir(), 'test_manga') . '.zip';
+
+    $zip = new ZipArchive();
+    if ($zip->open($tempZipPath, ZipArchive::CREATE) !== true) {
+        throw new \Exception("ZIPファイルを作成できませんでした: {$tempZipPath}");
+    }
+
+    $index = 1;
+    foreach ($images as $imageData) {
+        [$dimension, $extension, $filename] = array_pad($imageData, 3, null);
+
+        [$width, $height] = explode('x', $dimension);
+
+        if (!$filename) {
+            $filename = (string)$index;
+        }
+
+        $img = imagecreatetruecolor((int)$width, (int)$height);
+
+        ob_start();
+        switch (strtolower($extension)) {
+            case 'jpg':
+            case 'jpeg':
+                imagejpeg($img, null, 80);
+                break;
+            case 'png':
+            default:
+                imagepng($img);
+                break;
+        }
+        $binaryImage = ob_get_clean();
+
+        imagedestroy($img);
+
+        $zip->addFromString("{$filename}.{$extension}", $binaryImage);
+
+        $index++;
+    }
+
+    $zip->close();
+
+    return $tempZipPath;
+}
+
+
