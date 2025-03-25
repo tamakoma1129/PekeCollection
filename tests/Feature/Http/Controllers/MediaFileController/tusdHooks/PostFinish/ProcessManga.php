@@ -112,7 +112,7 @@ test('漫画が投稿でき、infoファイルが削除される', function () {
 
     $response->assertOk();
 
-    $this->assertFileDoesNotExist(Storage::disk("private")->path($this->infoBaseName));;
+    $this->assertFileDoesNotExist(Storage::disk("private")->path($this->infoBaseName));
 });
 
 test('漫画が投稿でき、zipファイルが削除される', function () {
