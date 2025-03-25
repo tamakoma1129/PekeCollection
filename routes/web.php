@@ -32,7 +32,8 @@ Route::middleware(['auth', CheckUserExists::class])->group(function () {
         ->name('media_file.update');
 
     Route::delete('/tag', [TagController::class, 'detach'])->name('tag.detach');
-    Route::delete('/media-file', [MediaFileController::class, 'destroy'])->name('media_file.destroy');
+    Route::delete('/media-file', [MediaFileController::class, 'destroy'])
+        ->name('media_file.destroy');
 });
 
 require __DIR__.'/auth.php';
