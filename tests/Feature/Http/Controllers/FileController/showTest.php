@@ -38,4 +38,4 @@ test("privateのパスが間違っていたら404", function ($path) {
         "uploads/images/wrongPathImage.png",
     ]);
 
-test("音源・動画のテストも作る")->todo();
+test("音源・動画のテストも暇だったら作る")->todo();
