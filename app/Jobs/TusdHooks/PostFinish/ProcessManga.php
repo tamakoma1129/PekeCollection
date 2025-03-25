@@ -49,7 +49,9 @@ class ProcessManga implements ShouldQueue
         $dirUploadRelPath = "uploads/mangas/{$uniqueFolderName}/";
         $dirExtraRelPath = "extras/mangas/{$uniqueFolderName}/";
         $zipFullPath = storage_path("app/private/{$zipRelPath}");
-        $unzipFullPath = storage_path("app/private/".pathinfo($zipRelPath, PATHINFO_DIRNAME)."/". pathinfo($zipRelPath, PATHINFO_FILENAME));
+        $unzipFullPath = storage_path(
+            "app/private/" . pathinfo($zipRelPath, PATHINFO_DIRNAME) . "/" . pathinfo($zipRelPath, PATHINFO_FILENAME)
+        );
 
         try {
             $this->unzipManga($zipFullPath, $unzipFullPath);
@@ -66,7 +68,7 @@ class ProcessManga implements ShouldQueue
                 $fileNames = $this->getUnzippedFiles(storage_path("app/private/{$dirUploadRelPath}"));
 
                 $pageAspectSizes = [];
-                $mangaPages      = [];
+                $mangaPages = [];
 
                 foreach ($fileNames as $index => $fileName) {
                     $pageNumber = $index + 1;
@@ -101,8 +103,8 @@ class ProcessManga implements ShouldQueue
 
                 // mangaを保存
                 $manga = new Manga();
-                $manga->title  = $title;
-                $manga->width  = $mangaWidth;
+                $manga->title = $title;
+                $manga->width = $mangaWidth;
                 $manga->height = $mangaHeight;
                 $manga->save();
 
@@ -163,7 +165,9 @@ class ProcessManga implements ShouldQueue
         // $allには「.」「..」も含まれるので、indexカウントは自分でやる
         $index = 0;
         foreach ($all as $fileName) {
-            if ($fileName === '.' || $fileName === '..') continue;
+            if ($fileName === '.' || $fileName === '..') {
+                continue;
+            }
 
             $this->validation($dirFullPath . '/' . $fileName, $index);
 
@@ -183,7 +187,7 @@ class ProcessManga implements ShouldQueue
         if (!is_file($dirFullPath)) {
             throw new \Exception("ファイルが存在しませんでした: {$dirFullPath}");
         }
-        if (pathinfo($dirFullPath, PATHINFO_FILENAME) != $index+1) {
+        if (pathinfo($dirFullPath, PATHINFO_FILENAME) != $index + 1) {
             throw new \Exception("ファイル名が連番ではありませんでした: {$dirFullPath} != {$index}");
         }
         $mimeType = mime_content_type($dirFullPath);
