@@ -48,10 +48,8 @@ class ProcessManga implements ShouldQueue
         $uniqueFolderName = pathinfo($zipRelPath, PATHINFO_FILENAME);
         $dirUploadRelPath = "uploads/mangas/{$uniqueFolderName}/";
         $dirExtraRelPath = "extras/mangas/{$uniqueFolderName}/";
-        $zipFullPath = storage_path("app/private/{$zipRelPath}");
-        $unzipFullPath = storage_path(
-            "app/private/" . pathinfo($zipRelPath, PATHINFO_DIRNAME) . "/" . pathinfo($zipRelPath, PATHINFO_FILENAME)
-        );
+        $zipFullPath = Storage::disk("private")->path($zipRelPath);
+        $unzipFullPath = Storage::disk("private")->path(pathinfo($zipRelPath, PATHINFO_DIRNAME) . "/" . pathinfo($zipRelPath, PATHINFO_FILENAME));
 
         try {
             $this->unzipManga($zipFullPath, $unzipFullPath);
@@ -65,7 +63,7 @@ class ProcessManga implements ShouldQueue
                 $dirExtraRelPath
             ) {
                 // 解凍先にある名前一覧を昇順で取得(連番・存在・画像であることのバリデーション済み)
-                $fileNames = $this->getUnzippedFiles(storage_path("app/private/{$dirUploadRelPath}"));
+                $fileNames = $this->getUnzippedFiles(Storage::disk("private")->path($dirUploadRelPath));
 
                 $pageAspectSizes = [];
                 $mangaPages = [];
@@ -90,7 +88,7 @@ class ProcessManga implements ShouldQueue
                     $mangaPage->path           = $filePath;
                     $mangaPage->lite_path      = $dirExtraRelPath.pathinfo($fileName, PATHINFO_FILENAME).".webp";
                     $mangaPage->file_extension = pathinfo($fileName, PATHINFO_EXTENSION);
-                    $mangaPage->file_size      = filesize(storage_path("app/private/{$filePath}"));
+                    $mangaPage->file_size      = filesize(Storage::disk("private")->path($filePath));
                     $mangaPage->width          = $width;
                     $mangaPage->height         = $height;
 
