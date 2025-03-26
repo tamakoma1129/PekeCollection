@@ -48,7 +48,7 @@ onUnmounted(() => {
         <span class="peer" @mouseenter="onHover">
             <slot></slot>
         </span>
-        <p ref="tooltip" class="rounded bg-white px-8 py-4 shadow-lg fixed w-[300px] transition border border-sumi-300 hidden peer-hover:block">
+        <p ref="tooltip" class="rounded bg-sumi-700 text-white px-8 py-4 shadow-black shadow-[0px_0px_8px] fixed min-w-104 max-w-[300px] transition hidden peer-hover:block">
             {{ message }}
         </p>
     </div>
