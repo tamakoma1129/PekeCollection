@@ -7,7 +7,7 @@ export const useMediaEditStore = defineStore("mediaEdit", () => {
 
     const selectedMediaIds = ref([]);
     const mode = ref("view");
-    const mediaIds = computed(() => mediaList.mediaList.map((i) => i[0].id));
+    const mediaIds = computed(() => mediaList.mediaList.map((i) => i.id));
 
     const addSelection = (id) => {
         if (!selectedMediaIds.value.includes(id)) {
