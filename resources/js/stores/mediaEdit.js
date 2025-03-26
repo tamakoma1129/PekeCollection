@@ -33,11 +33,11 @@ export const useMediaEditStore = defineStore("mediaEdit", () => {
 
         if (isSelected) {
             // 解除モード
-            // クリックされたIDから手前方向に連続して選択されたIDをすべて解除
-            let index = clickedIndex;
+            // クリックされたIDから奥方向に連続して選択されたIDをすべて解除
+            let index = clickedIndex + 1;   // +1する理由は、クリックされたメディアは選択解除しないようにするため
             while (index >= 0 && selectedMediaIds.value.includes(mediaIds.value[index])) {
                 removeSelection(mediaIds.value[index]);
-                index--;
+                index++;
             }
         } else {
             // 選択モード
