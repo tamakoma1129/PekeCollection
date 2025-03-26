@@ -54,7 +54,7 @@ uploadsにオリジナルファイルを保存され、extrasにアプリケー�
 このプロジェクトのコントリビューションガイドラインについては、[CONTRIBUTING.md](./CONTRIBUTING.md) をご覧下さい。
 
 ## 技術構成
-- Laravel11
+- Laravel 12
 - Octane(Openswoole)
 - SQLite
 - Inertia.js + vue3 + TailwindCSS

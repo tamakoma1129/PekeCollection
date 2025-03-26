@@ -7,9 +7,9 @@ import {computed, watch} from "vue";
 import MediaPrevEdit from "@/Pages/Media/Index/Partials/MediaPrevEdit.vue";
 
 import TagEdit from "@/Pages/Media/Index/Partials/TagEdit.vue";
-import DeleteEdit from "@/Pages/Media/Index/Partials/DeleteEdit.vue";
 import {useMediaList} from "@/stores/mediaList.js";
 import Search from "@/Pages/Media/Index/Partials/Search.vue";
+import EditMenuBar from "@/Pages/Media/Index/Partials/EditMenuBar.vue";
 
 defineOptions({
     layout: AuthenticatedLayout,
@@ -66,7 +66,6 @@ watch(
     </div>
 
     <TagEdit v-if="isEdit" />
-    <DeleteEdit v-if="isEdit" />
 
     <ul class="flex divide-y divide-sumi-400 p-16 bg-white rounded-xl"
         :class="{'flex-wrap gap-x-24 gap-y-40' : isView, 'flex-col' : isEdit}">
@@ -94,4 +93,6 @@ watch(
             </div>
         </WhenVisible>
     </div>
+
+    <EditMenuBar v-if="isEdit" />
 </template>

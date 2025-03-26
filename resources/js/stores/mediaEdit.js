@@ -7,7 +7,7 @@ export const useMediaEditStore = defineStore("mediaEdit", () => {
 
     const selectedMediaIds = ref([]);
     const mode = ref("view");
-    const mediaIds = computed(() => mediaList.mediaList.map((i) => i[0].id));
+    const mediaIds = computed(() => mediaList.mediaList.map((i) => i.id));
 
     const addSelection = (id) => {
         if (!selectedMediaIds.value.includes(id)) {
@@ -33,11 +33,11 @@ export const useMediaEditStore = defineStore("mediaEdit", () => {
 
         if (isSelected) {
             // 解除モード
-            // クリックされたIDから手前方向に連続して選択されたIDをすべて解除
-            let index = clickedIndex;
+            // クリックされたIDから奥方向に連続して選択されたIDをすべて解除
+            let index = clickedIndex + 1;   // +1する理由は、クリックされたメディアは選択解除しないようにするため
             while (index >= 0 && selectedMediaIds.value.includes(mediaIds.value[index])) {
                 removeSelection(mediaIds.value[index]);
-                index--;
+                index++;
             }
         } else {
             // 選択モード
