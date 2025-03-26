@@ -13,7 +13,7 @@ const deleteEditRef = ref(null);
 
 <template>
     <div
-        class="fixed bottom-104 inset-x-0 max-w-max mx-auto bg-white/65 rounded-xl shadow-black shadow-[0px_0px_12px] py-8 px-24 min-h-40 min-w-168 flex items-center justify-center">
+        class="fixed bottom-104 inset-x-0 max-w-max mx-auto bg-white/65 rounded-xl shadow-black shadow-[0px_0px_12px] py-8 px-24 flex items-center justify-center">
         <p class="select-none">{{ mediaEditStore.selectedMediaIds.length }} / {{ mediaList.mediaList.length }} 選択中</p>
         <ToolTip message="全ての選択を解除" class="ml-16">
             <button class="flex items-center  rounded-full p-4"
@@ -23,7 +23,7 @@ const deleteEditRef = ref(null);
                 <i-hugeicons-check-unread-04 class="w-24 h-24"/>
             </button>
         </ToolTip>
-        <div class="flex items-center ml-4 relative">
+        <div class="flex items-center ml-8 relative">
             <button @click="isOpenActionMenu = !isOpenActionMenu"
                     v-click-outside="() => isOpenActionMenu = false"
                     class="hover:bg-sumi-200 rounded-full p-4">
