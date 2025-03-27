@@ -1,13 +1,27 @@
 <script setup>
-import {ref, onMounted, onBeforeUnmount} from "vue";
+import {onMounted, onBeforeUnmount} from "vue";
 import {useMediaStore} from "@/stores/media.js";
+import WaveSurfer from "wavesurfer.js";
 
 const mediaStore = useMediaStore();
-const audioElement = ref(null);
-
 
 onMounted(() => {
-    const element = audioElement.value;
+    const wavesurfer = WaveSurfer.create({
+        container: "#waveform",
+        normalize: true,
+        waveColor: '#fff',
+        progressColor: '#40c1b3',
+        cursorWidth: 0,
+        barWidth: 3,
+        barGap: 3,
+        url: mediaStore.src
+    })
+
+    wavesurfer.on("click", () => {
+        wavesurfer.play();
+    })
+
+    const element = wavesurfer.getMediaElement();
     mediaStore.setMediaElement(element);
 
     // 初期設定
@@ -15,10 +29,6 @@ onMounted(() => {
     element.currentTime = mediaStore.currentTime || 0;
     element.volume = mediaStore.currentVolume || 1;
     element.muted = mediaStore.isMuted || false;
-
-    if (mediaStore.isPlaying) {
-        element.play();
-    }
 });
 
 onBeforeUnmount(() => {
@@ -27,6 +37,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <audio ref="audioElement"></audio>
+    <div>
+        <div id="waveform" class="w-[80vw]"></div>
+    </div>
 </template>
 
