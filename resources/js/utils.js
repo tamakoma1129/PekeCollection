@@ -1,5 +1,5 @@
 export function getPrivateStoragePath(path) {
-    return `private/${path}`;
+    return path ? `private/${path}` : null;
 }
 
 export function convertToValidWindowsFileName(fileName) {
