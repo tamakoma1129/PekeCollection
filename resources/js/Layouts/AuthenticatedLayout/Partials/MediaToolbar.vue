@@ -3,7 +3,7 @@ import {computed, onMounted, onUnmounted,} from "vue";
 import { useMediaStore } from "@/stores/media.js";
 import MediaSpace from "./MediaSpace.vue";
 import {useMediaList} from "@/stores/mediaList.js";
-import {getPrivateStoragePath} from "@/utils.js";
+import {formatSecondsToTime} from "@/utils.js";
 
 const mediaStore = useMediaStore();
 const mediaListStore = useMediaList();
@@ -36,17 +36,6 @@ const toggleMute = () => {
         mediaStore.mute();
     }
 };
-
-const formatSecondsToTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-
-    if (hours > 0) {
-        return `${hours}:${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
-    }
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-}
 
 const handleKeydown = (event) => {
     const tagName = event.target.tagName.toLowerCase();

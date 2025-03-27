@@ -4,6 +4,7 @@ import { useMediaStore } from "@/stores/media.js";
 import WaveSurfer from "wavesurfer.js";
 import Hover from "wavesurfer.js/dist/plugins/hover.esm.js";
 import { Vibrant } from "node-vibrant/browser";
+import {formatSecondsToTime} from "../../../utils.js";
 
 const mediaStore = useMediaStore();
 const imageElement = ref();
@@ -56,7 +57,7 @@ const createWaveSurfer = () => {
                 const index = Math.floor(i * scale)
                 const value = Math.abs(channels[0][index])
                 let x = i
-                let amplitude = height / 2
+                let amplitude = height / 2.5
                 let y = value * amplitude
 
                 ctx.moveTo(x, 0)
@@ -84,6 +85,17 @@ const createWaveSurfer = () => {
     wavesurfer.value.on('ready', () => {
         const peaks = wavesurfer.value.exportPeaks()
         localStorage.setItem('cache' + mediaStore.src, JSON.stringify(peaks))
+    })
+
+    wavesurfer.value.on("timeupdate", (time) => {
+        const container = document.querySelector("#waveform")
+        const label = document.querySelector("#cursor-label")
+
+        const duration = wavesurfer.value.getDuration()
+        const containerWidth = container.clientWidth
+        const x = containerWidth * (time / duration)
+
+        label.style.left = `${x}px`
     })
 
     const element = wavesurfer.value.getMediaElement();
@@ -157,7 +169,16 @@ onBeforeUnmount(() => {
                 <i-typcn-media-pause v-if="mediaStore.isPlaying" class="h-64 w-64 text-sumi-50 rounded-full box-content p-8" :style="`background: ${primaryColor}`" />
                 <i-typcn-media-play v-else class="h-64 w-64 text-sumi-50 rounded-full box-content p-8" :style="`background: ${primaryColor}`" />
             </button>
-            <div id="waveform" class="flex-1"></div>
+            <div id="waveform" class="flex-1 relative">
+                <div
+                    id="cursor-label"
+                    class="absolute text-sm px-4 font-mono font-bold whitespace-nowrap"
+                    style="transform: translateX(-50%); bottom: -2em;"
+                    :style="`color: ${primaryColor}`"
+                >
+                    {{ formatSecondsToTime(mediaStore.currentTime) }}|{{ formatSecondsToTime(mediaStore.duration) }}
+                </div>
+            </div>
         </div>
     </div>
 </template>
