@@ -24,6 +24,7 @@
     },
     "dependencies": {
         "@zip.js/zip.js": "^2.7.57",
+        "node-vibrant": "^4.0.3",
         "pinia": "^2.2.6",
         "tus-js-client": "^4.3.1",
         "vite-plugin-html": "^3.2.2",

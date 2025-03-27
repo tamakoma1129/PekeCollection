@@ -102,7 +102,7 @@ const setPreviousMedia = () => {
             <div class="w-40 h-40 bg-sumi-900 overflow-hidden border border-sumi-400 box-content">
                 <img
                     v-if="mediaStore.preview_image_path"
-                    :src="getPrivateStoragePath(mediaStore.preview_image_path)"
+                    :src="mediaStore.preview_image_path"
                     :alt="mediaStore.title"
                     class="w-full h-full"
                 />

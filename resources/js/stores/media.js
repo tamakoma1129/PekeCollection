@@ -17,6 +17,7 @@ export const useMediaStore = defineStore("media2", () => {
     const height = ref(null);
     const title = ref(null);
     const preview_image_path = ref(null);
+    const raw_image_path = ref(null);   // audioがもつデータ
 
     // 画像・漫画固有のデータ
     const srcLite = ref(null);
@@ -33,13 +34,14 @@ export const useMediaStore = defineStore("media2", () => {
         type.value = media.mediable_type;
         src.value = getPrivateStoragePath(media.path);
         title.value = media.title;
-        preview_image_path.value = media.preview_image_path;
+        preview_image_path.value = getPrivateStoragePath(media.preview_image_path);
         currentTime.value = 0;
         duration.value = 0;
 
         switch (type.value) {
             case "App\\Models\\Audio":
                 isPlaying.value = true;
+                raw_image_path.value = getPrivateStoragePath(media.mediable.raw_image_path);
                 if (mediaElement.value && mediaElement.value instanceof HTMLAudioElement) {
                     mediaElement.value.src = src.value;
                     mediaElement.value.currentTime = 0;
@@ -206,6 +208,7 @@ export const useMediaStore = defineStore("media2", () => {
         height,
         title,
         preview_image_path,
+        raw_image_path,
 
         setImageElement,
         unsetImageElement,
