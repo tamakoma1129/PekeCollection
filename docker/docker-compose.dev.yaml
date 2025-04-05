@@ -12,28 +12,10 @@ services:
     ports:
       - "80:80"
       - "5173:5173"
+      - "8080:8080"
     volumes:
       - ../:/PekeCollection
       - "./octane/php.ini:/usr/local/etc/php/php.ini"
-      - "${STORAGE_DIR_PRIVATE:?Error: STORAGE_DIR_PRIVATE is not set}:/PekeCollection/storage/app/private"
-    networks:
-      - backend
-    working_dir: /PekeCollection
-    entrypoint: "/entrypoint.sh"
-
-  queue-worker:
-    container_name: queue-worker-container-dev
-    image: queue-worker-container-dev
-    build:
-      context: ../
-      dockerfile: docker/php/Dockerfile.dev
-    environment:
-      - APP_ROLE=queue-worker
-      - PULSE_SERVER_NAME=queue-worker
-      - APP_ENV=local
-    volumes:
-      - ../:/PekeCollection
-      - "./queue-worker/php.ini:/usr/local/etc/php/php.ini"
       - "${STORAGE_DIR_PRIVATE:?Error: STORAGE_DIR_PRIVATE is not set}:/PekeCollection/storage/app/private"
     networks:
       - backend

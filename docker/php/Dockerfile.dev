@@ -57,4 +57,5 @@ RUN chmod +x /entrypoint.sh
 
 EXPOSE 80
 EXPOSE 5173
+EXPOSE 8080
 ENTRYPOINT ["/entrypoint.sh"]
