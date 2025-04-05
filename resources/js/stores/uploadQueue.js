@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import * as tus from "tus-js-client";
-import {router} from "@inertiajs/vue3";
 
 export const useUploadQueueStore = defineStore("uploadQueue", {
     state: () => ({
@@ -53,9 +52,6 @@ export const useUploadQueueStore = defineStore("uploadQueue", {
                     // メモリ解放（ファイル本体を空にする）
                     item.file = null;
                     item.uploadInstance = null;
-
-                    // 本当は再読み込み(reset)せずに更新したいが、少しやっかいそうなので一旦resetする方針で
-                    router.reload({ reset: ['medias'], only: ["medias"]})
                 },
                 onError: (error) => {
                     item.status = "アップロード失敗";

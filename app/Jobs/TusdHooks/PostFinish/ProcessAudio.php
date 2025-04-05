@@ -3,6 +3,7 @@
 namespace App\Jobs\TusdHooks\PostFinish;
 
 use App\Enums\MediaFolderTypes;
+use App\Events\MediaProcessedEvent;
 use App\Models\Audio;
 use App\Models\MediaFile;
 use App\Services\Audio\AudioService;
@@ -40,6 +41,8 @@ class ProcessAudio implements ShouldQueue
             preg_replace("#^/private/#", "", $this->uploadData["path"]),
             preg_replace("#^/private/#", "", $this->uploadData["infoPath"])
         );
+
+        event(new MediaProcessedEvent());
     }
 
     private function handleBody($fileName, $mimeType, $fileSize, $filePath, $infoPath): void

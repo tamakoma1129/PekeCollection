@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout/AuthenticatedLayout.vue';
-import {Head, WhenVisible} from '@inertiajs/vue3';
+import {Head, router, WhenVisible} from '@inertiajs/vue3';
 import MediaPrev from "@/Pages/Media/Index/Partials/MediaPrev.vue";
 import { useMediaEditStore } from "@/stores/mediaEdit.js";
 import {computed, watch} from "vue";
@@ -39,6 +39,13 @@ watch(
     },
     { immediate: true }
 );
+
+
+Echo.private("login")
+    .listen("MediaProcessedEvent", () => {
+        console.log("MediaProcessedEvent");
+        router.reload({ reset: ['medias'], only: ["medias"]})
+    })
 </script>
 
 <template>
