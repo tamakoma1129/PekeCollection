@@ -1,8 +1,11 @@
 <?php
 
 
+use App\Events\MediaProcessedEvent;
+
 beforeEach(function () {
     Storage::fake('private');
+    Event::fake();
     config(['queue.default' => 'sync']);
     login();
 
@@ -260,4 +263,26 @@ test('ファイル名が連番じゃないとエラー', function () {
     $this->assertDirectoryDoesNotExist(Storage::disk("private")->path("uploads/mangas/manga"));
     $this->assertDirectoryDoesNotExist(Storage::disk("private")->path("extras/mangas/manga"));
     $this->assertFileDoesNotExist(Storage::disk("private")->path($this->infoBaseName));
+});
+
+test('漫画が投稿後、イベントが発火する', function () {
+    $zipPath = createTestMangaZip([
+        ["10x10", "png"],
+        ["10x10", "png"],
+        ["10x10", "png"],
+    ]);
+    Storage::disk("private")->put("uploads/mangas/manga.zip", file_get_contents($zipPath));
+
+    $payload = postFinishPayload(
+        "manga",
+        "application/zip",
+        10000,
+        $this->path,
+        $this->pathInfo
+    );
+    $response = $this->postJson(route("tusd-hooks"), $payload);
+
+    $response->assertOk();
+
+    Event::assertDispatched(MediaProcessedEvent::class);
 });
