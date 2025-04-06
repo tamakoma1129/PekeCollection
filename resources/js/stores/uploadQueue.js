@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import * as tus from "tus-js-client";
+import {ulid} from "ulid";
 
 export const useUploadQueueStore = defineStore("uploadQueue", {
     state: () => ({
@@ -13,6 +14,7 @@ export const useUploadQueueStore = defineStore("uploadQueue", {
 
         addFile(file) {
             this.files.push({
+                queueId: ulid(),    // アップロード状況をバックエンドから更新できるようにするためだけの簡易的なID。一意であれば何でも良い。
                 file: file,
                 name: file.name,
                 status: "待機中",
@@ -38,6 +40,7 @@ export const useUploadQueueStore = defineStore("uploadQueue", {
                 metadata: {
                     filename: item.file.name,
                     mimetype: item.file.type,
+                    queueId: item.queueId,
                 },
                 onBeforeRequest: (req) => {
                     const xhr = req.getUnderlyingObject();
@@ -80,8 +83,16 @@ export const useUploadQueueStore = defineStore("uploadQueue", {
                 item.uploadInstance.start();
             }
         },
+
         clearQueue() {
             this.files = [];
         },
+
+        proceedJob(queueId) {
+            const item = this.files.find((item) => item.queueId === queueId);
+            if (item?.status && item.status === "アップロード成功") {
+                item.status = "ジョブ処理成功"
+            }
+        }
     },
 });

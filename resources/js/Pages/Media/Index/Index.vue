@@ -10,6 +10,7 @@ import TagEdit from "@/Pages/Media/Index/Partials/TagEdit.vue";
 import {useMediaList} from "@/stores/mediaList.js";
 import Search from "@/Pages/Media/Index/Partials/Search.vue";
 import EditMenuBar from "@/Pages/Media/Index/Partials/EditMenuBar.vue";
+import {useUploadQueueStore} from "@/stores/uploadQueue.js";
 
 defineOptions({
     layout: AuthenticatedLayout,
@@ -24,6 +25,7 @@ const props = defineProps({
 })
 
 const mediaEditStore = useMediaEditStore();
+const uploadQueueStore = useUploadQueueStore();
 
 const isView = computed(() => mediaEditStore.mode === "view");
 const isEdit = computed(() => mediaEditStore.mode === "edit");
@@ -42,8 +44,8 @@ watch(
 
 
 Echo.private("login")
-    .listen("MediaProcessedEvent", () => {
-        console.log("MediaProcessedEvent");
+    .listen("MediaProcessedEvent", (event) => {
+        uploadQueueStore.proceedJob(event.queueId)
         router.reload({ reset: ['medias'], only: ["medias"]})
     })
 </script>

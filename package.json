@@ -29,6 +29,7 @@
         "node-vibrant": "^4.0.3",
         "pinia": "^2.2.6",
         "tus-js-client": "^4.3.1",
+        "ulid": "^3.0.0",
         "vite-plugin-html": "^3.2.2",
         "vite-plugin-vue-devtools": "^7.6.4",
         "vue-toast-notification": "^3.1.3",

@@ -42,7 +42,7 @@ class ProcessVideo implements ShouldQueue
             preg_replace("#^/private/#", "", $this->uploadData["infoPath"])
         );
 
-        event(new MediaProcessedEvent());
+        event(new MediaProcessedEvent($this->uploadData["queueId"]));
     }
 
     private function handleBody($fileName, $mimeType, $fileSize, $filePath, $infoPath): void

@@ -13,17 +13,12 @@ class MediaProcessedEvent implements shouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     */
-    public function __construct()
-    {}
+    public string $queueId;
+    public function __construct(string $queueId)
+    {
+        $this->queueId = $queueId;
+    }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
     public function broadcastOn(): Channel
     {
         return new PrivateChannel("login");

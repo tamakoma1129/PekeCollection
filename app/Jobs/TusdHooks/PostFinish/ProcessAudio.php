@@ -22,7 +22,7 @@ class ProcessAudio implements ShouldQueue
     protected ImageService $imageService;
     protected FileService $fileService;
     protected $uploadData;
-    public function __construct(array $uploadData, )
+    public function __construct(array $uploadData)
     {
         $this->uploadData = $uploadData;
     }
@@ -42,7 +42,7 @@ class ProcessAudio implements ShouldQueue
             preg_replace("#^/private/#", "", $this->uploadData["infoPath"])
         );
 
-        event(new MediaProcessedEvent());
+        event(new MediaProcessedEvent($this->uploadData["queueId"]));
     }
 
     private function handleBody($fileName, $mimeType, $fileSize, $filePath, $infoPath): void

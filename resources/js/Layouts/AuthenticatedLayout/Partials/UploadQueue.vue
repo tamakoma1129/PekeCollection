@@ -18,7 +18,7 @@ const clearQueue = () => {
 };
 
 const successfulUploads = computed(() => {
-    return uploadQueueStore.files.filter((file) => file.status === "アップロード成功").length;
+    return uploadQueueStore.files.filter((file) => file.status === "ジョブ処理成功").length;
 });
 
 const failedUploads = computed(() => {
@@ -88,8 +88,13 @@ const resumeUpload = (index) => {
                     </span>
 
                     <!-- アップロード成功時のアイコン -->
-                    <i-ic-round-check-circle
+                    <i-line-md-loading-twotone-loop
                         v-if="file.status === 'アップロード成功'"
+                        class="w-24 h-24 flex-shrink-0" />
+
+                    <!-- ジョブ処理成功時のアイコン -->
+                    <i-ic-round-check-circle
+                        v-if="file.status === 'ジョブ処理成功'"
                         class="text-green-500 w-24 h-24 flex-shrink-0" />
 
                     <!-- アップロード失敗時（クリックで再アップロード） -->
