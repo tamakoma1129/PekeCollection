@@ -63,7 +63,8 @@ RUN composer install --optimize-autoloader --no-dev \
 
 # 初期設定
 COPY ./.env.example ./.env
-RUN php artisan key:generate
+RUN php artisan key:generate && \
+    php artisan reverb:install
 
 #####################################
 # Stage 2: フロントエンドのビルド

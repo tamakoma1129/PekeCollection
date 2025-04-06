@@ -46,7 +46,7 @@ RUN pecl install openswoole \
     && docker-php-ext-enable openswoole
 
 # Supervisorで使う設定ファイルをコピー
-COPY ./docker/supervisor/pulse.conf /etc/supervisor/conf.d/pulse.conf
+COPY ./docker/supervisor/pulse.dev.conf /etc/supervisor/conf.d/pulse.conf
 
 # Composerのインストール
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
