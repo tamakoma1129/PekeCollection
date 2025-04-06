@@ -43,11 +43,19 @@ watch(
 );
 
 
+let reloadTimer = null;
 Echo.private("login")
     .listen("MediaProcessedEvent", (event) => {
-        uploadQueueStore.proceedJob(event.queueId)
-        router.reload({ reset: ['medias'], only: ["medias"]})
-    })
+        uploadQueueStore.proceedJob(event.queueId);
+
+        // 複数のアップロード処理完了イベントが同時にあった場合、再読み込みを何回もしてしまうのでdebounceする
+        if (reloadTimer !== null) {
+            clearTimeout(reloadTimer);
+        }
+        reloadTimer = setTimeout(() => {
+            router.reload({ reset: ["medias"], only: ["medias"] });
+        }, 500);
+    });
 </script>
 
 <template>
