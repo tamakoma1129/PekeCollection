@@ -63,7 +63,8 @@ RUN composer install --optimize-autoloader --no-dev \
 
 # 初期設定
 COPY ./.env.example ./.env
-RUN php artisan key:generate
+RUN php artisan key:generate && \
+    php artisan reverb:install
 
 #####################################
 # Stage 2: フロントエンドのビルド
@@ -91,4 +92,5 @@ COPY ./docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 80
+EXPOSE 8080
 ENTRYPOINT ["/entrypoint.sh"]

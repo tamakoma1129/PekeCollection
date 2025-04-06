@@ -10,6 +10,7 @@ services:
       - PULSE_SERVER_NAME=octane
     ports:
       - "80:80"
+      - "8080:8080"
     volumes:
       - "../storage:/PekeCollection/storage"
       - "./octane/php.ini:/usr/local/etc/php/php.ini"
@@ -17,24 +18,6 @@ services:
     networks:
       - backend
     entrypoint: "/entrypoint.sh"
-    restart: always
-
-  queue-worker:
-    container_name: queue-worker-container
-    image: queue-worker-container
-    build:
-      context: ../
-      dockerfile: docker/php/Dockerfile
-    environment:
-      - APP_ROLE=queue-worker
-      - PULSE_SERVER_NAME=queue-worker
-    volumes:
-      - "../storage:/PekeCollection/storage"
-      - "./queue-worker/php.ini:/usr/local/etc/php/php.ini"
-      - "${STORAGE_DIR_PRIVATE:?Error: STORAGE_DIR_PRIVATE is not set}:/PekeCollection/storage/app/private"
-    networks:
-      - backend
-    command: "/entrypoint.sh"
     restart: always
 
   tus:

@@ -1,9 +1,11 @@
 <?php
 
+use App\Events\MediaProcessedEvent;
 use Illuminate\Http\UploadedFile;
 
 beforeEach(function () {
     Storage::fake('private');
+    Event::fake();
     config(['queue.default' => 'sync']);
     login();
 
@@ -163,4 +165,25 @@ test('画像投稿時プレビュー画像も作られる', function () {
     $prevPath = "extras/images/$baseName/prev.webp";
     Storage::disk("private")->assertExists($prevPath);
     $this->assertDatabaseHas("media_files", ["preview_image_path"=>$prevPath]);
+});
+
+test('画像が投稿後、イベントが発火する', function () {
+    $baseName = "image.png";
+    $path = "/private/uploads/images/$baseName";
+
+    $fakeImage = UploadedFile::fake()->image($baseName);
+    Storage::disk('private')->put("uploads/images/$baseName", file_get_contents($fakeImage->getRealPath()));
+
+    $payload = postFinishPayload(
+        $baseName,
+        "image/png",
+        10000,
+        $path,
+        $this->pathInfo
+    );
+    $response = $this->postJson(route("tusd-hooks"), $payload);
+
+    $response->assertOk();
+
+    Event::assertDispatched(MediaProcessedEvent::class);
 });

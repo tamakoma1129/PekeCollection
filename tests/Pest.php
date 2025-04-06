@@ -61,7 +61,8 @@ function preCreatePayload(
             "Upload" => [
                 "MetaData" => [
                     "filename" => $fileName,
-                    "mimetype" => $mimeType
+                    "mimetype" => $mimeType,
+                    "queueId" => \Symfony\Component\Uid\Ulid::generate(),
                 ],
                 "Size" => $fileSize
             ]
@@ -82,7 +83,8 @@ function postFinishPayload(
             "Upload" => [
                 "MetaData" => [
                     "filename" => $fileName,
-                    "mimetype" => $mimeType
+                    "mimetype" => $mimeType,
+                    "queueId" => \Symfony\Component\Uid\Ulid::generate(),
                 ],
                 "Size" => $fileSize,
                 "Storage" => [

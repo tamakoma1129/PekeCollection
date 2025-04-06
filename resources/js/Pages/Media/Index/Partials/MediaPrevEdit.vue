@@ -94,16 +94,16 @@ const addTag = (tagName) => {
             </span>
         </div>
         <!-- ホバー時 -->
-        <div class="select-none overflow-visible w-40 h-40 p-4">
-            <div v-if="mediaFile.preview_image_path">
+        <div class="select-none w-40 h-40 p-4">
+            <div v-if="mediaFile.preview_image_path" class="h-full w-full">
                 <img :src="getPrivateStoragePath(mediaFile.preview_image_path)"
                      :alt="mediaFile.title"
                      draggable=false
-                     class="peer bg-sumi-900 w-full"
+                     class="peer h-full w-full object-contain"
                 />
                 <img :src="getPrivateStoragePath(mediaFile.preview_image_path)"
                      :alt="mediaFile.title"
-                     class="hidden absolute h-272 w-auto peer-hover:block z-1 -top-272 bg-sumi-900"
+                     class="hidden absolute peer-hover:block z-1 max-w-[50vw] max-h-[50vh] object-contain bottom-40 ml-40"
                 />
             </div>
             <div v-else class="h-full w-full bg-gradient-to-r from-slate-900 to-slate-700"/>

@@ -18,6 +18,7 @@ class PostFinishAction
             "fileSize" => $request->input("Event.Upload.Size"),
             "path" => $request->input("Event.Upload.Storage.Path"),
             "infoPath" => $request->input("Event.Upload.Storage.InfoPath"),
+            "queueId" => $request->input("Event.Upload.MetaData.queueId"),
         ];
 
         $mimeType = $uploadData["mimeType"];

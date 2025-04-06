@@ -1,7 +1,10 @@
 <?php
 
+use App\Events\MediaProcessedEvent;
+
 beforeEach(function () {
     Storage::fake('private');
+    Event::fake();
     config(['queue.default' => 'sync']);
     login();
 
@@ -203,4 +206,23 @@ test('動画のプレビューの無加工版が作成される', function () {
         "raw_image_path" => $rawPrevPath,
     ]);
     $this->assertFileExists(Storage::disk("private")->path($rawPrevPath));
+});
+
+test('動画が投稿後、イベントが発火する', function () {
+    $baseName = "video.mp4";
+    $path = "/private/uploads/videos/$baseName";
+    Storage::disk('private')->put("uploads/videos/$baseName", file_get_contents(base_path("tests/Data/sample.mp4")));
+
+    $payload = postFinishPayload(
+        $baseName,
+        "video/mp4",
+        10000,
+        $path,
+        $this->pathInfo
+    );
+    $response = $this->postJson(route("tusd-hooks"), $payload);
+
+    $response->assertOk();
+
+    Event::assertDispatched(MediaProcessedEvent::class);
 });

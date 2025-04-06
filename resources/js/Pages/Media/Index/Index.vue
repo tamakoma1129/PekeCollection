@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout/AuthenticatedLayout.vue';
-import {Head, WhenVisible} from '@inertiajs/vue3';
+import {Head, router, WhenVisible} from '@inertiajs/vue3';
 import MediaPrev from "@/Pages/Media/Index/Partials/MediaPrev.vue";
 import { useMediaEditStore } from "@/stores/mediaEdit.js";
 import {computed, watch} from "vue";
@@ -10,6 +10,7 @@ import TagEdit from "@/Pages/Media/Index/Partials/TagEdit.vue";
 import {useMediaList} from "@/stores/mediaList.js";
 import Search from "@/Pages/Media/Index/Partials/Search.vue";
 import EditMenuBar from "@/Pages/Media/Index/Partials/EditMenuBar.vue";
+import {useUploadQueueStore} from "@/stores/uploadQueue.js";
 
 defineOptions({
     layout: AuthenticatedLayout,
@@ -24,6 +25,7 @@ const props = defineProps({
 })
 
 const mediaEditStore = useMediaEditStore();
+const uploadQueueStore = useUploadQueueStore();
 
 const isView = computed(() => mediaEditStore.mode === "view");
 const isEdit = computed(() => mediaEditStore.mode === "edit");
@@ -39,6 +41,21 @@ watch(
     },
     { immediate: true }
 );
+
+
+let reloadTimer = null;
+Echo.private("login")
+    .listen("MediaProcessedEvent", (event) => {
+        uploadQueueStore.proceedJob(event.queueId);
+
+        // 複数のアップロード処理完了イベントが同時にあった場合、再読み込みを何回もしてしまうのでdebounceする
+        if (reloadTimer !== null) {
+            clearTimeout(reloadTimer);
+        }
+        reloadTimer = setTimeout(() => {
+            router.reload({ reset: ["medias"], only: ["medias"] });
+        }, 500);
+    });
 </script>
 
 <template>

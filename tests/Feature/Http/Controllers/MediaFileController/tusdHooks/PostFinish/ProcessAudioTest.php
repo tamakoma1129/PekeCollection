@@ -1,7 +1,10 @@
 <?php
 
+use App\Events\MediaProcessedEvent;
+
 beforeEach(function () {
     Storage::fake('private');
+    Event::fake();
     config(['queue.default' => 'sync']);
     login();
 
@@ -229,3 +232,21 @@ test("音源のプレビューが保存される", function (
         "soundless.mp3" // 無音でも処理が実行されることのテスト
     ]);
 
+test("音源アップロード後、イベントが発火する", function () {
+    $baseName = "audio.mp3";
+    $path = "/private/uploads/audios/$baseName";
+    Storage::disk('private')->put("uploads/audios/$baseName", file_get_contents(base_path("tests/Data/sample.mp3")));
+
+    $payload = postFinishPayload(
+        $baseName,
+        "audio/mpeg",
+        10000,
+        $path,
+        $this->pathInfo
+    );
+    $response = $this->postJson(route("tusd-hooks"), $payload);
+
+    $response->assertOk();
+
+    Event::assertDispatched(MediaProcessedEvent::class);
+});
