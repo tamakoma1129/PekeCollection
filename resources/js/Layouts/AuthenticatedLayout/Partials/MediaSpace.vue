@@ -10,8 +10,8 @@ const mediaStore = useMediaStore();
 const mediaListStore = useMediaList();
 const dialog = ref(null);
 
-const screenWidth = ref(window.innerHeight - 1)
-const screenHeight = ref(window.innerWdith - 1)
+const screenWidth = ref(window.innerHeight - 1);
+const screenHeight = ref(window.innerWdith - 1);
 
 /**
  * Mediaと画面比率どちらが狭いかを判定し、それによってwidthを付けるかheightを付けるか判断する。
@@ -91,6 +91,7 @@ onMounted(() => {
 
     window.addEventListener("mousemove", showControls);
     window.addEventListener("touchstart", showControls);
+    window.addEventListener("click", showControls);
     startHideControlsTimer();
 })
 
@@ -99,8 +100,15 @@ onBeforeUnmount(() => {
 
     window.removeEventListener("mousemove", showControls);
     window.removeEventListener("touchstart", showControls);
+    window.removeEventListener("click", showControls);
     clearTimeout(hideControlsTimeout);
 });
+
+const isMenuBarVisible = ref(false);
+
+const setThumbnailFromCurrentTime = () => {
+
+}
 
 const setNextMedia = () => {
     mediaListStore.setNextMedia();
@@ -125,12 +133,13 @@ const setPreviousMedia = () => {
                              class="media-element"
                              :style="isMediaNarrower ? `height: ${screenHeight-1}px` : `width: ${screenWidth-1}px`"/>
         </div>
+        <!--メディアスペースを閉じるアイコン-->
         <button @click="closeMediaSpace"
                 class="fixed top-[2dvh] right-[1dvw] rounded px-4 text-white/50 transition-opacity duration-300"
                 :class="{ 'opacity-0': !isControlsVisible, 'opacity-100': isControlsVisible }">
             <i-mingcute-close-fill class="h-[6dvh] w-[6dvw] focus:outline-none"/>
         </button>
-
+        <!--次・前のメディアへ移動する矢印-->
         <button @click="setPreviousMedia"
                 class="fixed left-[1dvw] top-1/2 text-white/50 focus:outline-none transition-opacity duration-300"
                 :class="{ 'opacity-0': !isControlsVisible, 'opacity-100': isControlsVisible }">
@@ -141,6 +150,24 @@ const setPreviousMedia = () => {
                 :class="{ 'opacity-0': !isControlsVisible, 'opacity-100': isControlsVisible }">
             <i-mingcute-right-fill class="h-[6dvh] w-[6dvw]"/>
         </button>
+        <!--左上のハンバーガー-->
+        <div class="fixed top-[2dvh] left-[2dvw] transition-opacity duration-300"
+             :class="{ 'opacity-0': !isControlsVisible, 'opacity-100': isControlsVisible }">
+            <button @click="() => isMenuBarVisible = !isMenuBarVisible"
+                    class="rounded text-white/50">
+                <i-mingcute-menu-fill
+                    class="h-[4dvh] w-fit"/>
+            </button>
+            <ul v-if="isMenuBarVisible"
+                class="bg-white/50 py-8 rounded-lg
+                       [&>li]:flex [&>li]:items-center [&>li]:justify-between [&>li]:py-4 [&>li]:px-4 [&>li]:cursor-pointer">
+                <li v-if="mediaStore.type === 'App\\Models\\Video'"
+                    class="hover:bg-sumi-300">
+                    <i-iconoir-screenshot class="text-black w-24"/>
+                    <p>ここをサムネイルにする</p>
+                </li>
+            </ul>
+        </div>
     </dialog>
 </template>
 
