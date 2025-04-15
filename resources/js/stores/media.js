@@ -10,6 +10,7 @@ export const useMediaStore = defineStore("media2", () => {
     const imageElement = ref(null);
 
     // media固有のデータ
+    const id = ref(null);
     const type = ref(null);
     const src = ref(null);
     const duration = ref(0);
@@ -31,6 +32,7 @@ export const useMediaStore = defineStore("media2", () => {
     const isOpenMediaSpace = ref(false);
 
     const setMediaData = (media, page) => {
+        id.value = media.id;
         type.value = media.mediable_type;
         src.value = getPrivateStoragePath(media.path);
         title.value = media.title;
@@ -127,7 +129,7 @@ export const useMediaStore = defineStore("media2", () => {
     const handleTimeupdate = () => {
         console.log("handleTimeupdate")
         if (mediaElement.value) {
-            currentTime.value = Math.round(mediaElement.value.currentTime);
+            currentTime.value = mediaElement.value.currentTime;
         }
     };
     const handleOnplay = () => {
@@ -196,6 +198,7 @@ export const useMediaStore = defineStore("media2", () => {
     };
 
     return {
+        id,
         type,
         src,
         srcLite,

@@ -5,6 +5,10 @@ import MediaSpaceImage from "@/Layouts/AuthenticatedLayout/Partials/MediaSpaceIm
 import MediaSpaceVideo from "@/Layouts/AuthenticatedLayout/Partials/MediaSpaceVideo.vue";
 import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {useMediaList} from "@/stores/mediaList";
+import {useForm} from "@inertiajs/vue3";
+import {useToast} from "vue-toast-notification";
+
+const $toast = useToast();
 
 const mediaStore = useMediaStore();
 const mediaListStore = useMediaList();
@@ -107,7 +111,22 @@ onBeforeUnmount(() => {
 const isMenuBarVisible = ref(false);
 
 const setThumbnailFromCurrentTime = () => {
-
+    useForm({
+        "prev_time": mediaStore.currentTime,
+    }).patch(route("media_file.update", mediaStore.id), {
+        onSuccess: () => {
+            $toast.success("サムネイルを変更しました", {
+                position: 'top-right',
+                duration: 5000
+            });
+        },
+        onError: () => {
+            $toast.error("サムネイルの変更でエラーが発生しました", {
+                position: 'top-right',
+                duration: 5000
+            });
+        },
+    })
 }
 
 const setNextMedia = () => {
@@ -162,6 +181,7 @@ const setPreviousMedia = () => {
                 class="bg-white/50 py-8 rounded-lg
                        [&>li]:flex [&>li]:items-center [&>li]:justify-between [&>li]:py-4 [&>li]:px-4 [&>li]:cursor-pointer">
                 <li v-if="mediaStore.type === 'App\\Models\\Video'"
+                    @click="setThumbnailFromCurrentTime"
                     class="hover:bg-sumi-300">
                     <i-iconoir-screenshot class="text-black w-24"/>
                     <p>ここをサムネイルにする</p>
