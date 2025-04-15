@@ -16,7 +16,7 @@ class ImageService
      * @param string|null $readDisk
      * @return array
      */
-    public function getDimensions(string $path, ?string $readDisk="private"): array
+    public function getDimensions(string $path, string $readDisk="private"): array
     {
         $manager = new ImageManager(new Driver());
         $image = $manager->read(Storage::disk($readDisk)->path($path));
@@ -32,7 +32,7 @@ class ImageService
      * @return string
      * @throws FileNotFoundException
      */
-    public function generateImagePrev(MediaFolderTypes $types, string $fileName, string $readPath, ?string $readDisk="private"): string
+    public function generateImagePrev(MediaFolderTypes $types, string $fileName, string $readPath, string $readDisk="private"): string
     {
         $savePath = "extras/{$types->value}/{$fileName}/prev.webp";
 
@@ -54,8 +54,8 @@ class ImageService
     public function generateLiteImage(
         string $readPath,
         string $savePath,
-        ?string $readDisk="private",
-        ?string $saveDisk="private"
+        string $readDisk="private",
+        string $saveDisk="private"
     ): void
     {
         if (!Storage::disk($readDisk)->exists($readPath)) {

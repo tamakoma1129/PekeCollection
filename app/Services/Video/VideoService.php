@@ -11,7 +11,7 @@ class VideoService
      * @param string|null $disk
      * @return int
      */
-    public function getDuration(string $videoFilePath, ?string $disk = "private"): int
+    public function getDuration(string $videoFilePath, string $disk = "private"): int
     {
         return FFMpeg::fromDisk($disk)->open($videoFilePath)->getDurationInSeconds();
     }
@@ -21,7 +21,7 @@ class VideoService
      * @param string|null $disk
      * @return array{width: int, height: int}
      */
-    public function getResolution(string $videoFilePath, ?string $disk = "private")
+    public function getResolution(string $videoFilePath, string $disk = "private")
     {
        $videoDimensions = FFmpeg::fromDisk($disk)->open($videoFilePath)
            ->getVideoStream()
@@ -30,7 +30,7 @@ class VideoService
        return [$videoDimensions->getWidth(), $videoDimensions->getHeight()];
     }
 
-    public function generateRawImage(string $videoFilePath, ?string $disk = "private")
+    public function generateRawImage(string $videoFilePath, string $disk = "private")
     {
         $fileName = pathinfo($videoFilePath, PATHINFO_BASENAME);
         $rawSavePath = "extras/videos/{$fileName}/raw.webp";
@@ -46,7 +46,7 @@ class VideoService
         return $rawSavePath;
     }
 
-    public function generatePrevVideo(string $videoFilePath, int $videoDuration, int $videoWidth, int $videoHeight, ?string $disk = "private")
+    public function generatePrevVideo(string $videoFilePath, int $videoDuration, int $videoWidth, int $videoHeight, string $disk = "private")
     {
         $fileName = pathinfo($videoFilePath, PATHINFO_BASENAME);
         $prevVideoPath = "extras/videos/{$fileName}/anime_prev.webp";
