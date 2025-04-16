@@ -59,7 +59,7 @@ class ProcessVideo implements ShouldQueue
                 // raw & prevイメージを取得し保存。
                 $rawImagePath = $this->videoService->generateRawImage($filePath);
                 $prevImagePath = $this->imageService->generateImagePrev(MediaFolderTypes::VIDEOS, $uniqueBaseName, $rawImagePath);
-                $prevVideoPath = $this->videoService->generatePrevVideo($filePath, $videoDuration, $videoWidth, $videoHeight);
+                $prevVideoPath = $this->videoService->generatePrevVideo($filePath, $videoWidth, $videoHeight);
 
                 // videosへ保存
                 $video = new Video();

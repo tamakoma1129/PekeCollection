@@ -5,13 +5,17 @@ import MediaSpaceImage from "@/Layouts/AuthenticatedLayout/Partials/MediaSpaceIm
 import MediaSpaceVideo from "@/Layouts/AuthenticatedLayout/Partials/MediaSpaceVideo.vue";
 import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {useMediaList} from "@/stores/mediaList";
+import {useForm} from "@inertiajs/vue3";
+import {useToast} from "vue-toast-notification";
+
+const $toast = useToast();
 
 const mediaStore = useMediaStore();
 const mediaListStore = useMediaList();
 const dialog = ref(null);
 
-const screenWidth = ref(window.innerHeight - 1)
-const screenHeight = ref(window.innerWdith - 1)
+const screenWidth = ref(window.innerHeight - 1);
+const screenHeight = ref(window.innerWdith - 1);
 
 /**
  * Mediaと画面比率どちらが狭いかを判定し、それによってwidthを付けるかheightを付けるか判断する。
@@ -70,6 +74,7 @@ const handleKeyDown = (event) => {
 };
 
 const isControlsVisible = ref(true);
+const isMouseOverControlArea = ref(false);
 let hideControlsTimeout = null;
 
 // 一定時間後にボタンを非表示にする
@@ -77,7 +82,9 @@ const startHideControlsTimer = () => {
     const disappearTime = 390;  // ms秒
     clearTimeout(hideControlsTimeout);
     hideControlsTimeout = setTimeout(() => {
-        isControlsVisible.value = false;
+        if (!isMouseOverControlArea.value) {
+            isControlsVisible.value = false;
+        }
     }, disappearTime);
 };
 
@@ -91,6 +98,7 @@ onMounted(() => {
 
     window.addEventListener("mousemove", showControls);
     window.addEventListener("touchstart", showControls);
+    window.addEventListener("click", showControls);
     startHideControlsTimer();
 })
 
@@ -99,8 +107,30 @@ onBeforeUnmount(() => {
 
     window.removeEventListener("mousemove", showControls);
     window.removeEventListener("touchstart", showControls);
+    window.removeEventListener("click", showControls);
     clearTimeout(hideControlsTimeout);
 });
+
+const isMenuBarVisible = ref(false);
+
+const setThumbnailFromCurrentTime = () => {
+    useForm({
+        "prev_time": mediaStore.currentTime,
+    }).patch(route("media_file.update", mediaStore.id), {
+        onSuccess: () => {
+            $toast.success("サムネイルを変更しました", {
+                position: 'top-right',
+                duration: 5000
+            });
+        },
+        onError: () => {
+            $toast.error("サムネイルの変更でエラーが発生しました", {
+                position: 'top-right',
+                duration: 5000
+            });
+        },
+    })
+}
 
 const setNextMedia = () => {
     mediaListStore.setNextMedia();
@@ -125,12 +155,13 @@ const setPreviousMedia = () => {
                              class="media-element"
                              :style="isMediaNarrower ? `height: ${screenHeight-1}px` : `width: ${screenWidth-1}px`"/>
         </div>
+        <!--メディアスペースを閉じるアイコン-->
         <button @click="closeMediaSpace"
                 class="fixed top-[2dvh] right-[1dvw] rounded px-4 text-white/50 transition-opacity duration-300"
                 :class="{ 'opacity-0': !isControlsVisible, 'opacity-100': isControlsVisible }">
             <i-mingcute-close-fill class="h-[6dvh] w-[6dvw] focus:outline-none"/>
         </button>
-
+        <!--次・前のメディアへ移動する矢印-->
         <button @click="setPreviousMedia"
                 class="fixed left-[1dvw] top-1/2 text-white/50 focus:outline-none transition-opacity duration-300"
                 :class="{ 'opacity-0': !isControlsVisible, 'opacity-100': isControlsVisible }">
@@ -141,6 +172,27 @@ const setPreviousMedia = () => {
                 :class="{ 'opacity-0': !isControlsVisible, 'opacity-100': isControlsVisible }">
             <i-mingcute-right-fill class="h-[6dvh] w-[6dvw]"/>
         </button>
+        <!--左上のハンバーガー-->
+        <div class="fixed top-[2dvh] left-[2dvw] transition-opacity duration-300"
+             :class="{ 'opacity-0': !isControlsVisible, 'opacity-100': isControlsVisible }"
+             @mouseenter="isMouseOverControlArea = true"
+             @mouseleave="isMouseOverControlArea = false">
+            <button @click="() => isMenuBarVisible = !isMenuBarVisible"
+                    class="rounded text-white/50">
+                <i-mingcute-menu-fill
+                    class="h-[4dvh] w-fit"/>
+            </button>
+            <ul v-if="isMenuBarVisible"
+                class="bg-white/50 py-8 rounded-lg
+                       [&>li]:flex [&>li]:items-center [&>li]:justify-between [&>li]:py-8 [&>li]:px-4 [&>li]:cursor-pointer">
+                <li v-if="mediaStore.type === 'App\\Models\\Video'"
+                    @click="setThumbnailFromCurrentTime"
+                    class="hover:bg-sumi-300">
+                    <i-iconoir-screenshot class="text-black w-24"/>
+                    <p>ここをサムネイルにする</p>
+                </li>
+            </ul>
+        </div>
     </dialog>
 </template>
 

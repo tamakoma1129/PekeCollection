@@ -22,7 +22,8 @@ class UpdateReuqest extends FormRequest
     public function rules(): array
     {
         return [
-            "title" => "required|string|max:255",
+            "title" => "filled|string|max:255",
+            "prev_time" => "filled|numeric",
         ];
     }
 }

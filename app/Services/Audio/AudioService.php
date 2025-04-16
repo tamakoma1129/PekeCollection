@@ -19,7 +19,7 @@ class AudioService
      * @param string|null $disk
      * @return int
      */
-    public function getDuration(string $audioFilePath, ?string $disk = "private"): int
+    public function getDuration(string $audioFilePath, string $disk = "private"): int
     {
         return FFMpeg::fromDisk($disk)->open($audioFilePath)->getDurationInSeconds();
     }
@@ -29,7 +29,7 @@ class AudioService
      * @param string|null $disk
      * @return string|null
      */
-    public function generateRawImage(string $readAudioPath, ?string $disk = "private")
+    public function generateRawImage(string $readAudioPath, string $disk = "private")
     {
         $fileName = pathinfo($readAudioPath, PATHINFO_BASENAME);
         $rawSavePath = "extras/audios/{$fileName}/raw.webp";
@@ -52,7 +52,7 @@ class AudioService
         return $rawSavePath;
     }
 
-    public function generatePrevAudio(string $readAudioPath, int $duration, ?string $disk = "private")
+    public function generatePrevAudio(string $readAudioPath, int $duration, string $disk = "private")
     {
         $fileName = pathinfo($readAudioPath, PATHINFO_BASENAME);
         $prevSavePath = "extras/audios/{$fileName}/prev.mp3";
@@ -82,7 +82,7 @@ class AudioService
      * @param string|null $disk
      * @return float
      */
-    private function detectAudioStartSecond(string $audioPath, int $duration, ?string $disk = "private"): float
+    private function detectAudioStartSecond(string $audioPath, int $duration, string $disk = "private"): float
     {
         $segmentDuration = 20;
         $startSecond = 0;

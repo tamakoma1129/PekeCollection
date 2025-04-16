@@ -63,7 +63,7 @@ class FileService
      * @param string|null $disk
      * @return string
      */
-    public function getUniqueFileName(string $directoryRelPath, string $fileName, string $extension, ?string $disk = "private")
+    public function getUniqueFileName(string $directoryRelPath, string $fileName, string $extension, string $disk = "private")
     {
         $fileName = $this->convertToValidWindowsFileName($fileName);
         $extension = ltrim($extension, '.');
@@ -82,7 +82,7 @@ class FileService
         return $uniqueFileName;
     }
 
-    public function getUniqueFolderName(string $directoryRelPath, string $folderName, ?string $disk = "private")
+    public function getUniqueFolderName(string $directoryRelPath, string $folderName, string $disk = "private")
     {
         $folderName = $this->convertToValidWindowsFileName($folderName);
         $directoryRelPath = rtrim($directoryRelPath, '/').'/';
@@ -100,21 +100,21 @@ class FileService
         return $uniqueFolderName;
     }
 
-    public function copyFile(string $oldFilePath, string $newFilePath, ?string $disk = "private") {
+    public function copyFile(string $oldFilePath, string $newFilePath, string $disk = "private") {
         if (Storage::disk($disk)->exists($newFilePath)) {
             throw new FileAlreadyExistsException('同ファイル名のファイルが既に存在します');
         }
         Storage::disk($disk)->copy($oldFilePath, $newFilePath);
     }
 
-    public function moveFile(string $oldFilePath, string $newFilePath, ?string $disk = "private") {
+    public function moveFile(string $oldFilePath, string $newFilePath, string $disk = "private") {
         if (Storage::disk($disk)->exists($newFilePath)) {
             throw new FileAlreadyExistsException('同ファイル名のファイルが既に存在します');
         }
         Storage::disk($disk)->move($oldFilePath, $newFilePath);
     }
 
-    public function copyFolder(string $oldFolderPath, string $newFolderPath, ?string $disk = "private") {
+    public function copyFolder(string $oldFolderPath, string $newFolderPath, string $disk = "private") {
         if (Storage::disk($disk)->directoryExists($newFolderPath)) {
             throw new FileAlreadyExistsException('同フォルダ名のフォルダが既に存在します');
         }
@@ -123,7 +123,7 @@ class FileService
         File::copyDirectory($oldFullPath, $newFullPath);
     }
 
-    public function moveFolder(string $oldFolderPath, string $newFolderPath, ?string $disk = "private") {
+    public function moveFolder(string $oldFolderPath, string $newFolderPath, string $disk = "private") {
         if (Storage::disk($disk)->directoryExists($newFolderPath)) {
             throw new FileAlreadyExistsException('同フォルダ名のフォルダが既に存在します');
         }
@@ -132,7 +132,7 @@ class FileService
         File::moveDirectory($oldFullPath, $newFullPath);
     }
 
-    public function deleteFile(string $filePath, ?string $disk = "private") {
+    public function deleteFile(string $filePath, string $disk = "private") {
         if (Storage::disk($disk)->exists($filePath)) {
             Storage::disk($disk)->delete($filePath);
         } else {
@@ -140,7 +140,7 @@ class FileService
         }
     }
 
-    public function deleteFolder(string $folderPath, ?string $disk = "private") {
+    public function deleteFolder(string $folderPath, string $disk = "private") {
         if (Storage::disk($disk)->directoryExists($folderPath)) {
             $fullPath = Storage::disk($disk)->path($folderPath);
             File::deleteDirectory($fullPath);

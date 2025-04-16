@@ -11,7 +11,7 @@ class VideoService
      * @param string|null $disk
      * @return int
      */
-    public function getDuration(string $videoFilePath, ?string $disk = "private"): int
+    public function getDuration(string $videoFilePath, string $disk = "private"): int
     {
         return FFMpeg::fromDisk($disk)->open($videoFilePath)->getDurationInSeconds();
     }
@@ -21,7 +21,7 @@ class VideoService
      * @param string|null $disk
      * @return array{width: int, height: int}
      */
-    public function getResolution(string $videoFilePath, ?string $disk = "private")
+    public function getResolution(string $videoFilePath, string $disk = "private")
     {
        $videoDimensions = FFmpeg::fromDisk($disk)->open($videoFilePath)
            ->getVideoStream()
@@ -30,7 +30,7 @@ class VideoService
        return [$videoDimensions->getWidth(), $videoDimensions->getHeight()];
     }
 
-    public function generateRawImage(string $videoFilePath, ?string $disk = "private")
+    public function generateRawImage(string $videoFilePath, float $frameSeconds = 0, string $disk = "private")
     {
         $fileName = pathinfo($videoFilePath, PATHINFO_BASENAME);
         $rawSavePath = "extras/videos/{$fileName}/raw.webp";
@@ -39,14 +39,14 @@ class VideoService
             ->open($videoFilePath)
             ->addFilter('-map', '0:v:0')
             ->addFilter('-vcodec', 'libwebp')
-            ->getFrameFromSeconds(0)
+            ->getFrameFromSeconds($frameSeconds)
             ->export()
             ->save($rawSavePath);
 
         return $rawSavePath;
     }
 
-    public function generatePrevVideo(string $videoFilePath, int $videoDuration, int $videoWidth, int $videoHeight, ?string $disk = "private")
+    public function generatePrevVideo(string $videoFilePath, int $videoWidth, int $videoHeight, float $startSeconds = 0, float $durationSeconds = 3, string $disk = "private")
     {
         $fileName = pathinfo($videoFilePath, PATHINFO_BASENAME);
         $prevVideoPath = "extras/videos/{$fileName}/anime_prev.webp";
@@ -58,8 +58,8 @@ class VideoService
             ->export()
             ->toDisk($disk)
             ->addFilter([
-                '-ss', 0,
-                '-t', 3,
+                '-ss', $startSeconds,
+                '-t', $durationSeconds,
                 '-vf', 'fps=10,scale='.$scale.":flags=lanczos",
                 '-loop', 0,
                 '-vcodec', 'libwebp'
