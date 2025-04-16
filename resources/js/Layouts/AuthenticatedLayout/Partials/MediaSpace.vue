@@ -74,6 +74,7 @@ const handleKeyDown = (event) => {
 };
 
 const isControlsVisible = ref(true);
+const isMouseOverControlArea = ref(false);
 let hideControlsTimeout = null;
 
 // 一定時間後にボタンを非表示にする
@@ -81,7 +82,9 @@ const startHideControlsTimer = () => {
     const disappearTime = 390;  // ms秒
     clearTimeout(hideControlsTimeout);
     hideControlsTimeout = setTimeout(() => {
-        isControlsVisible.value = false;
+        if (!isMouseOverControlArea.value) {
+            isControlsVisible.value = false;
+        }
     }, disappearTime);
 };
 
@@ -171,7 +174,9 @@ const setPreviousMedia = () => {
         </button>
         <!--左上のハンバーガー-->
         <div class="fixed top-[2dvh] left-[2dvw] transition-opacity duration-300"
-             :class="{ 'opacity-0': !isControlsVisible, 'opacity-100': isControlsVisible }">
+             :class="{ 'opacity-0': !isControlsVisible, 'opacity-100': isControlsVisible }"
+             @mouseenter="isMouseOverControlArea = true"
+             @mouseleave="isMouseOverControlArea = false">
             <button @click="() => isMenuBarVisible = !isMenuBarVisible"
                     class="rounded text-white/50">
                 <i-mingcute-menu-fill
