@@ -184,7 +184,7 @@ const setPreviousMedia = () => {
             </button>
             <ul v-if="isMenuBarVisible"
                 class="bg-white/50 py-8 rounded-lg
-                       [&>li]:flex [&>li]:items-center [&>li]:justify-between [&>li]:py-4 [&>li]:px-4 [&>li]:cursor-pointer">
+                       [&>li]:flex [&>li]:items-center [&>li]:justify-between [&>li]:py-8 [&>li]:px-4 [&>li]:cursor-pointer">
                 <li v-if="mediaStore.type === 'App\\Models\\Video'"
                     @click="setThumbnailFromCurrentTime"
                     class="hover:bg-sumi-300">
