@@ -30,6 +30,10 @@ RUN apt-get update  \
         curl \
         nodejs \
         npm \
+    # audiowaveformの導入
+    && curl -LO https://github.com/bbc/audiowaveform/releases/download/1.10.2/audiowaveform_1.10.2-1-12_amd64.deb \
+    && apt-get install -y ./audiowaveform_1.10.2-1-12_amd64.deb \
+    && rm audiowaveform_1.10.2-1-12_amd64.deb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
