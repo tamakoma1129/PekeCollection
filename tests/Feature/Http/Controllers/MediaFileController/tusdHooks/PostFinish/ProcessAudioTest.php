@@ -250,3 +250,22 @@ test("音源アップロード後、イベントが発火する", function () {
 
     Event::assertDispatched(MediaProcessedEvent::class);
 });
+
+test("音源アップロード後、waveforms.jsonが作成される", function () {
+    $baseName = "audio.mp3";
+    $path = "/private/uploads/audios/$baseName";
+    Storage::disk('private')->put("uploads/audios/$baseName", file_get_contents(base_path("tests/Data/sample.mp3")));
+
+    $payload = postFinishPayload(
+        $baseName,
+        "audio/mpeg",
+        10000,
+        $path,
+        $this->pathInfo
+    );
+    $response = $this->postJson(route("tusd-hooks"), $payload);
+
+    $response->assertOk();
+
+    $this->assertTrue(Storage::disk("private")->exists("extras/audios/$baseName/waveforms.json"));
+});

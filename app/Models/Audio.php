@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property int $duration
  * @property string $raw_image_path
  * @property string $preview_audio_path
+ * @property string|null $waveform_path
  * @property \DateTime|null $created_at
  * @property \DateTime|null $updated_at
  */

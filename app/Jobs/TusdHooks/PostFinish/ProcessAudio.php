@@ -4,6 +4,7 @@ namespace App\Jobs\TusdHooks\PostFinish;
 
 use App\Enums\MediaFolderTypes;
 use App\Events\MediaProcessedEvent;
+use App\Jobs\GenerateWaveform;
 use App\Models\Audio;
 use App\Models\MediaFile;
 use App\Services\Audio\AudioService;
@@ -62,7 +63,6 @@ class ProcessAudio implements ShouldQueue
                     $prevImagePath = null;
                 }
 
-
                 $prevAudioPath = $this->audioService->generatePrevAudio($filePath, $audioDuration);
 
                 // audiosへ保存
@@ -83,6 +83,8 @@ class ProcessAudio implements ShouldQueue
                 $mediaFile->mediable_id = $audio->id;
                 $mediaFile->preview_image_path = $prevImagePath;
                 $mediaFile->save();
+
+                GenerateWaveform::dispatch($audio->id);
             });
         } catch (\Throwable $e) {
             // 保存済みのファイルがある場合は削除

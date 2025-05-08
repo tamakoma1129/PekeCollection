@@ -20,8 +20,22 @@ const togglePlay = () => {
     }
 }
 
-const createWaveSurfer = () => {
-    const cache = localStorage.getItem('cache' + mediaStore.src)
+const createWaveSurfer = async () => {
+    let peaks = [0];
+    if (mediaStore.waveform_path) {
+        try {
+            const response = await fetch(mediaStore.waveform_path);
+
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const json = await response.json();
+
+            peaks = json.data ?? [0];
+        } catch (err) {
+            console.warn("waveform fetch error:", err);
+        }
+    } else if (mediaStore.duration && mediaStore.duration <= 60 * 10) {   // 10分以内なら動的生成
+        peaks = null;
+    }
 
     wavesurfer.value = WaveSurfer.create({
         container: "#waveform",
@@ -30,7 +44,7 @@ const createWaveSurfer = () => {
         progressColor: primaryColor.value,   // sumi-50
         cursorWidth: 0,
         url: mediaStore.src,
-        peaks: cache && JSON.parse(cache),
+        peaks: peaks,
         hideScrollbar: true,
         dragToSeek: true,
         plugins: [
