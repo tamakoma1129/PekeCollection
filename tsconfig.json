@@ -1,0 +1,20 @@
+{
+    "extends": "@vue/tsconfig/tsconfig.json",
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": false,
+        "strict": false,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["resources/js/*"],
+            "ziggy-js": ["./vendor/tightenco/ziggy"]
+        },
+        "types": ["vite/client"]
+    },
+    "include": [
+        "resources/**/*.ts",
+        "resources/**/*.vue",
+        "resources/**/*.js"
+    ],
+    "exclude": ["node_modules", "public"]
+}
