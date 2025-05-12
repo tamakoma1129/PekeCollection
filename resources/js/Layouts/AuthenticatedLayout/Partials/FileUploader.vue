@@ -72,6 +72,8 @@ onUnmounted(() => {
         v-if="isDragging"
         class="fixed inset-0 bg-black/70 pointer-events-none z-inf flex justify-center items-center"
     >
-        <p class="text-white font-semibold text-3xl">D&Dでファイルをアップロード</p>
+        <p class="text-white font-semibold text-3xl">
+            D&Dでファイルをアップロード
+        </p>
     </div>
 </template>

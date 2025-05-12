@@ -28,7 +28,7 @@ onMounted(() => {
         () => {
             updateImage();
         },
-        { immediate: true }
+        { immediate: true },
     );
 });
 
@@ -38,10 +38,5 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <img
-        ref="imageElement"
-        draggable="false"
-        :src="displayedSrc"
-        alt="media"
-    />
+    <img ref="imageElement" draggable="false" :src="displayedSrc" alt="media" />
 </template>

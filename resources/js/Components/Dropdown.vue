@@ -1,43 +1,43 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from "vue";
 
 const props = defineProps({
     align: {
         type: String,
-        default: 'right',
+        default: "right",
     },
     width: {
         type: String,
-        default: '168',
+        default: "168",
     },
     contentClasses: {
         type: String,
-        default: 'py-4 bg-white',
+        default: "py-4 bg-white",
     },
 });
 
 const closeOnEscape = (e) => {
-    if (open.value && e.key === 'Escape') {
+    if (open.value && e.key === "Escape") {
         open.value = false;
     }
 };
 
-onMounted(() => document.addEventListener('keydown', closeOnEscape));
-onUnmounted(() => document.removeEventListener('keydown', closeOnEscape));
+onMounted(() => document.addEventListener("keydown", closeOnEscape));
+onUnmounted(() => document.removeEventListener("keydown", closeOnEscape));
 
 const widthClass = computed(() => {
     return {
-        168: 'w-168',
+        168: "w-168",
     }[props.width.toString()];
 });
 
 const alignmentClasses = computed(() => {
-    if (props.align === 'left') {
-        return 'ltr:origin-top-left rtl:origin-top-right start-0';
-    } else if (props.align === 'right') {
-        return 'ltr:origin-top-right rtl:origin-top-left end-0';
+    if (props.align === "left") {
+        return "ltr:origin-top-left rtl:origin-top-right start-0";
+    } else if (props.align === "right") {
+        return "ltr:origin-top-right rtl:origin-top-left end-0";
     } else {
-        return 'origin-top';
+        return "origin-top";
     }
 });
 

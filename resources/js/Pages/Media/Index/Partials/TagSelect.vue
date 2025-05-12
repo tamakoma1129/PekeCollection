@@ -15,7 +15,7 @@ const filterTags = () => {
         return;
     }
     filteredTags.value = tagsStore.allTags.filter((tag) =>
-        normalizeText(tag.name).includes(normalizeText(inputTag.value))
+        normalizeText(tag.name).includes(normalizeText(inputTag.value)),
     );
     showSelector.value = true;
 };
@@ -36,14 +36,13 @@ const selectTag = (tagName) => {
     }
 
     inputTag.value = "";
-    filteredTags.value = []
+    filteredTags.value = [];
 };
 
 const hideSelector = () => {
     showSelector.value = false;
 };
 </script>
-
 
 <template>
     <div class="relative flex items-center" v-click-outside="hideSelector">
@@ -57,18 +56,24 @@ const hideSelector = () => {
             class="w-272"
         />
         <!-- 24*7 = 168 で固定 -->
-        <ul v-if="filteredTags.length && inputTag && showSelector" class="flex flex-col-reverse absolute h-168 overflow-y-auto bg-transparent z-1 w-272 -top-[calc(168px)]">
+        <ul
+            v-if="filteredTags.length && inputTag && showSelector"
+            class="flex flex-col-reverse absolute h-168 overflow-y-auto bg-transparent z-1 w-272 -top-[calc(168px)]"
+        >
             <li
-                v-for="(tag) in filteredTags"
+                v-for="tag in filteredTags"
                 :key="tag.name"
                 class="flex justify-between items-center px-8 bg-white hover:bg-sumi-200 cursor-pointer h-24 border-x border-x-sumi-400 border-t border-t-sumi-400"
                 @click="selectTag(tag.name)"
             >
-                <span>{{tag.name}}</span>
-                <span>{{tag.count}}</span>
+                <span>{{ tag.name }}</span>
+                <span>{{ tag.count }}</span>
             </li>
         </ul>
-        <button class="mx-8 rounded px-24 py-8 bg-sumi-200 border border-sumi-400 hover:bg-sumi-300" @click="selectTag(inputTag)">
+        <button
+            class="mx-8 rounded px-24 py-8 bg-sumi-200 border border-sumi-400 hover:bg-sumi-300"
+            @click="selectTag(inputTag)"
+        >
             追加
         </button>
     </div>

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import * as tus from "tus-js-client";
-import {ulid} from "ulid";
+import { ulid } from "ulid";
 
 export const useUploadQueueStore = defineStore("uploadQueue", {
     state: () => ({
@@ -14,7 +14,7 @@ export const useUploadQueueStore = defineStore("uploadQueue", {
 
         addFile(file) {
             this.files.push({
-                queueId: ulid(),    // アップロード状況をバックエンドから更新できるようにするためだけの簡易的なID。一意であれば何でも良い。
+                queueId: ulid(), // アップロード状況をバックエンドから更新できるようにするためだけの簡易的なID。一意であれば何でも良い。
                 file: file,
                 name: file.name,
                 status: "待機中",
@@ -35,7 +35,8 @@ export const useUploadQueueStore = defineStore("uploadQueue", {
             item.progress = 0;
 
             const upload = new tus.Upload(item.file, {
-                endpoint: "http://"+window.location.hostname+":1080/uploads/",
+                endpoint:
+                    "http://" + window.location.hostname + ":1080/uploads/",
                 retryDelays: [2000],
                 metadata: {
                     filename: item.file.name,
@@ -58,7 +59,9 @@ export const useUploadQueueStore = defineStore("uploadQueue", {
                 },
                 onError: (error) => {
                     item.status = "アップロード失敗";
-                    item.errorMessage = error ? error.toString() : "アップロード中にエラーが発生しました";
+                    item.errorMessage = error
+                        ? error.toString()
+                        : "アップロード中にエラーが発生しました";
                 },
             });
 
@@ -91,8 +94,8 @@ export const useUploadQueueStore = defineStore("uploadQueue", {
         proceedJob(queueId) {
             const item = this.files.find((item) => item.queueId === queueId);
             if (item?.status && item.status === "アップロード成功") {
-                item.status = "ジョブ処理成功"
+                item.status = "ジョブ処理成功";
             }
-        }
+        },
     },
 });

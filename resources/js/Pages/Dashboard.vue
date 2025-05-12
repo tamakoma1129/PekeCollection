@@ -1,6 +1,6 @@
 <!-- resources/js/Pages/Dashboard.vue -->
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
 
 defineOptions({
@@ -18,5 +18,4 @@ defineOptions({
             </div>
         </div>
     </div>
-
 </template>

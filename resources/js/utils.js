@@ -12,7 +12,7 @@ export function convertToValidWindowsFileName(fileName) {
         '"': "”",
         "<": "＜",
         ">": "＞",
-        "|": "｜"
+        "|": "｜",
     };
 
     return fileName.replace(/[\\/:*?"<>|]/g, (match) => replaceMap[match]);
@@ -27,4 +27,4 @@ export const formatSecondsToTime = (seconds) => {
         return `${hours}:${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
     }
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-}
+};

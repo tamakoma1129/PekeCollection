@@ -1,8 +1,8 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from "vue";
 
 const props = defineProps({
-    message: {type: String, required: true},
+    message: { type: String, required: true },
 });
 
 const tooltip = ref(null);
@@ -23,7 +23,10 @@ const adjustTooltipPosition = () => {
     }
 
     // 下側にはみ出す場合 -56は再生バーの縦幅
-    if (containerRect.bottom + tooltip.value.offsetHeight > viewportHeight - 56) {
+    if (
+        containerRect.bottom + tooltip.value.offsetHeight >
+        viewportHeight - 56
+    ) {
         tooltip.value.style.top = `${containerRect.top - tooltip.value.offsetHeight}px`;
     } else {
         tooltip.value.style.top = `${containerRect.bottom}px`;
@@ -35,11 +38,11 @@ const onHover = () => {
 };
 
 onMounted(() => {
-    window.addEventListener('resize', adjustTooltipPosition);
+    window.addEventListener("resize", adjustTooltipPosition);
 });
 
 onUnmounted(() => {
-    window.removeEventListener('resize', adjustTooltipPosition);
+    window.removeEventListener("resize", adjustTooltipPosition);
 });
 </script>
 
@@ -48,7 +51,10 @@ onUnmounted(() => {
         <span class="peer" @mouseenter="onHover">
             <slot></slot>
         </span>
-        <p ref="tooltip" class="rounded bg-sumi-700 text-white px-8 py-4 shadow-black shadow-[0px_0px_8px] fixed min-w-104 max-w-[300px] transition hidden peer-hover:block">
+        <p
+            ref="tooltip"
+            class="rounded bg-sumi-700 text-white px-8 py-4 shadow-black shadow-[0px_0px_8px] fixed min-w-104 max-w-[300px] transition hidden peer-hover:block"
+        >
             {{ message }}
         </p>
     </div>

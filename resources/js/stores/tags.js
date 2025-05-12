@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, onMounted } from "vue";
-import {useToast} from "vue-toast-notification";
+import { useToast } from "vue-toast-notification";
 
 const $toast = useToast();
 
@@ -17,29 +17,31 @@ export const useTagsStore = defineStore("tags", () => {
         if (!selectedTags.value.includes(tagName)) {
             selectedTags.value.push(tagName);
         }
-    }
+    };
 
     const unselectTag = (tagName) => {
         if (selectedTags.value.includes(tagName)) {
-            selectedTags.value = selectedTags.value.filter((name) => name !== tagName);
+            selectedTags.value = selectedTags.value.filter(
+                (name) => name !== tagName,
+            );
         }
-    }
+    };
 
     const cleanSelectTag = () => {
         selectedTags.value = [];
-    }
+    };
 
     const addTempTag = (tagName) => {
         if (!tempTags.value.includes(tagName)) {
             tempTags.value.push(tagName);
         }
-    }
+    };
 
     const removeTempTag = (tagName) => {
         if (tempTags.value.includes(tagName)) {
             tempTags.value = tempTags.value.filter((name) => name !== tagName);
         }
-    }
+    };
 
     const updateTags = () => {
         fetch("/tag")
@@ -63,7 +65,7 @@ export const useTagsStore = defineStore("tags", () => {
 
     const toggleViewTempTags = () => {
         isViewTempTags.value = !isViewTempTags.value;
-    }
+    };
 
     const startDrag = (tagName) => {
         draggedTag.value = tagName;

@@ -1,11 +1,9 @@
 <script setup>
-import {ref, onMounted, onBeforeUnmount} from "vue";
-import {useMediaStore} from "@/stores/media.js";
-
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { useMediaStore } from "@/stores/media.js";
 
 const mediaStore = useMediaStore();
 const videoElement = ref(null);
-
 
 onMounted(() => {
     const element = videoElement.value;
@@ -24,11 +22,9 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     mediaStore.unsetMediaElement();
-})
+});
 </script>
-
 
 <template>
     <video ref="videoElement" controls></video>
 </template>
-

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import {computed, ref} from "vue";
-import {useMediaList} from "@/stores/mediaList.js";
+import { computed, ref } from "vue";
+import { useMediaList } from "@/stores/mediaList.js";
 
 export const useMediaEditStore = defineStore("mediaEdit", () => {
     const mediaList = useMediaList();
@@ -17,7 +17,7 @@ export const useMediaEditStore = defineStore("mediaEdit", () => {
 
     const removeSelection = (id) => {
         selectedMediaIds.value = selectedMediaIds.value.filter(
-            (selectedId) => selectedId !== id
+            (selectedId) => selectedId !== id,
         );
     };
 
@@ -34,8 +34,11 @@ export const useMediaEditStore = defineStore("mediaEdit", () => {
         if (isSelected) {
             // 解除モード
             // クリックされたIDから奥方向に連続して選択されたIDをすべて解除
-            let index = clickedIndex + 1;   // +1する理由は、クリックされたメディアは選択解除しないようにするため
-            while (index >= 0 && selectedMediaIds.value.includes(mediaIds.value[index])) {
+            let index = clickedIndex + 1; // +1する理由は、クリックされたメディアは選択解除しないようにするため
+            while (
+                index >= 0 &&
+                selectedMediaIds.value.includes(mediaIds.value[index])
+            ) {
                 removeSelection(mediaIds.value[index]);
                 index++;
             }
@@ -46,7 +49,7 @@ export const useMediaEditStore = defineStore("mediaEdit", () => {
             while (
                 index >= 0 &&
                 !selectedMediaIds.value.includes(mediaIds.value[index])
-                ) {
+            ) {
                 addSelection(mediaIds.value[index]);
                 index--;
             }

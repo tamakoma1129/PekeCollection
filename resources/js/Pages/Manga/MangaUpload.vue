@@ -1,11 +1,11 @@
 <script setup>
 import { ref } from "vue";
 import { useToast } from "vue-toast-notification";
-import {Head, usePage} from "@inertiajs/vue3";
+import { Head, usePage } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
 import * as zip from "@zip.js/zip.js";
-import {convertToValidWindowsFileName} from "@/utils.js";
-import {useUploadQueueStore} from "@/stores/uploadQueue.js";
+import { convertToValidWindowsFileName } from "@/utils.js";
+import { useUploadQueueStore } from "@/stores/uploadQueue.js";
 
 defineOptions({
     layout: AuthenticatedLayout,
@@ -60,7 +60,7 @@ const sortImagesByName = () => {
 
     $toast.success("フォルダ名順で並べました", {
         position: "top-right",
-        duration: 5000
+        duration: 5000,
     });
 };
 
@@ -89,7 +89,9 @@ const endDrag = () => {
 const dropImage = (targetIndex) => {
     if (selectedImages.value.length > 0) {
         const movedImages = selectedImages.value.map((i) => images.value[i]);
-        images.value = images.value.filter((_, i) => !selectedImages.value.includes(i));
+        images.value = images.value.filter(
+            (_, i) => !selectedImages.value.includes(i),
+        );
         images.value.splice(targetIndex, 0, ...movedImages);
         selectedImages.value = [];
     }
@@ -98,7 +100,9 @@ const dropImage = (targetIndex) => {
 
 const dropToDelete = () => {
     if (selectedImages.value.length > 0) {
-        images.value = images.value.filter((_, i) => !selectedImages.value.includes(i));
+        images.value = images.value.filter(
+            (_, i) => !selectedImages.value.includes(i),
+        );
         selectedImages.value = [];
     }
     isDragging.value = false;
@@ -109,12 +113,11 @@ async function createZip(files, title) {
     const zipWriter = new zip.ZipWriter(new zip.BlobWriter("application/zip"));
 
     for (const [index, file] of files.entries()) {
-        const extension = file.name.split('.').pop(); // .tar.gzなどには対応できないが、メディアファイルの拡張子にそのような例外は無い(はず)
+        const extension = file.name.split(".").pop(); // .tar.gzなどには対応できないが、メディアファイルの拡張子にそのような例外は無い(はず)
         const newFileName = `${index + 1}.${extension}`;
 
         await zipWriter.add(newFileName, new zip.BlobReader(file));
     }
-
 
     const filename = convertToValidWindowsFileName(title);
     const blob = await zipWriter.close();
@@ -128,14 +131,14 @@ const uploadManga = async () => {
     if (!mangaTitle.value) {
         $toast.error("タイトルを入力してください。", {
             position: "top-right",
-            duration: 5000
+            duration: 5000,
         });
         return;
     }
     if (images.value.length === 0) {
         $toast.error("画像がありません。", {
             position: "top-right",
-            duration: 5000
+            duration: 5000,
         });
         return;
     }
@@ -159,7 +162,7 @@ const uploadManga = async () => {
         console.error("アップロード中にエラー:", err);
         $toast.error("アップロード中にエラーが発生しました", {
             position: "top-right",
-            duration: 5000
+            duration: 5000,
         });
     }
 };
@@ -168,15 +171,22 @@ const uploadManga = async () => {
 <template>
     <Head title="漫画追加" />
     <div class="space-y-24 flex flex-col justify-center items-center pb-168">
-
         <!-- ドロップエリア -->
         <div
             @dragover.prevent
             @drop.prevent="handleDrop"
             class="border-4 border-dashed border-gray-400 m-16 p-16 text-center w-full"
         >
-            <p class="text-gray-500">ここに画像をドラッグ＆ドロップしてください</p>
-            <input type="file" multiple hidden ref="fileInput" @change="handleFiles" />
+            <p class="text-gray-500">
+                ここに画像をドラッグ＆ドロップしてください
+            </p>
+            <input
+                type="file"
+                multiple
+                hidden
+                ref="fileInput"
+                @change="handleFiles"
+            />
             <button
                 @click="$refs.fileInput.click()"
                 class="mt-8 bg-gray-500 text-white p-16 rounded"
@@ -210,10 +220,12 @@ const uploadManga = async () => {
                 @drop="dropImage(index)"
                 class="m-8 border-4 border-gray-400 p-4"
             >
-                <p class="text-sm text-center">
-                    {{ index + 1 }}ページ
-                </p>
-                <img :src="image.preview" alt="Preview" class="w-104 h-auto rounded" />
+                <p class="text-sm text-center">{{ index + 1 }}ページ</p>
+                <img
+                    :src="image.preview"
+                    alt="Preview"
+                    class="w-104 h-auto rounded"
+                />
                 <p class="text-sm text-center">
                     {{ image.file.name }}
                 </p>
@@ -227,7 +239,9 @@ const uploadManga = async () => {
             @dragover.prevent
             @drop.prevent="dropToDelete"
         >
-            <p class="font-bold text-3xl text-red-600">ここにドラッグして削除</p>
+            <p class="font-bold text-3xl text-red-600">
+                ここにドラッグして削除
+            </p>
         </div>
 
         <!-- タイトル入力欄 -->

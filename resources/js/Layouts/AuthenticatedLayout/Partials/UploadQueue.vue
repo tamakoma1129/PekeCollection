@@ -18,11 +18,15 @@ const clearQueue = () => {
 };
 
 const successfulUploads = computed(() => {
-    return uploadQueueStore.files.filter((file) => file.status === "ジョブ処理成功").length;
+    return uploadQueueStore.files.filter(
+        (file) => file.status === "ジョブ処理成功",
+    ).length;
 });
 
 const failedUploads = computed(() => {
-    return uploadQueueStore.files.filter((file) => file.status === "アップロード失敗").length;
+    return uploadQueueStore.files.filter(
+        (file) => file.status === "アップロード失敗",
+    ).length;
 });
 
 const retryUpload = (file, index) => {
@@ -46,20 +50,37 @@ const resumeUpload = (index) => {
 </script>
 
 <template>
-    <div class="fixed bottom-[50px] right-24 w-[300px] max-h-[50dvh] bg-sumi-50 p-16 border border-solid border-sumi-500 rounded overflow-hidden">
+    <div
+        class="fixed bottom-[50px] right-24 w-[300px] max-h-[50dvh] bg-sumi-50 p-16 border border-solid border-sumi-500 rounded overflow-hidden"
+    >
         <header>
             <div class="flex items-center justify-between">
                 <div>
-                    <span v-if="isExpanded" class="font-bold select-none">アップロードキュー</span>
-                    <span v-else-if="failedUploads > 0">アップロード失敗: {{ failedUploads }}</span>
-                    <span v-else class="font-bold select-none">アップロード成功: {{ successfulUploads }} 件</span>
+                    <span v-if="isExpanded" class="font-bold select-none"
+                        >アップロードキュー</span
+                    >
+                    <span v-else-if="failedUploads > 0"
+                        >アップロード失敗: {{ failedUploads }}</span
+                    >
+                    <span v-else class="font-bold select-none"
+                        >アップロード成功: {{ successfulUploads }} 件</span
+                    >
                 </div>
                 <div class="flex gap-4">
-                    <button class="hover:bg-sumi-300 rounded-full p-4" @click="toggleExpansion">
-                        <i-icon-park-outline-down v-if="isExpanded" class="h-24 w-24" />
+                    <button
+                        class="hover:bg-sumi-300 rounded-full p-4"
+                        @click="toggleExpansion"
+                    >
+                        <i-icon-park-outline-down
+                            v-if="isExpanded"
+                            class="h-24 w-24"
+                        />
                         <i-icon-park-outline-up v-else class="h-24 w-24" />
                     </button>
-                    <button class="hover:bg-sumi-300 rounded-full p-4" @click="clearQueue">
+                    <button
+                        class="hover:bg-sumi-300 rounded-full p-4"
+                        @click="clearQueue"
+                    >
                         <i-icon-park-outline-close-small class="h-24 w-24" />
                     </button>
                 </div>
@@ -69,9 +90,17 @@ const resumeUpload = (index) => {
         <div v-show="isExpanded" class="mt-4">
             <!-- ファイルリスト -->
             <div class="overflow-y-auto max-h-[40vh]">
-                <div v-for="(file, index) in uploadQueueStore.files" :key="index" class="flex items-center justify-between mb-2">
+                <div
+                    v-for="(file, index) in uploadQueueStore.files"
+                    :key="index"
+                    class="flex items-center justify-between mb-2"
+                >
                     <!-- ファイル名 -->
-                    <span class="whitespace-nowrap overflow-hidden overflow-ellipsis mr-2" :title="file.name">{{ file.name }}</span>
+                    <span
+                        class="whitespace-nowrap overflow-hidden overflow-ellipsis mr-2"
+                        :title="file.name"
+                        >{{ file.name }}</span
+                    >
 
                     <!-- アップロード中のアイコン -->
                     <i-line-md-uploading-loop
@@ -90,12 +119,14 @@ const resumeUpload = (index) => {
                     <!-- アップロード成功時のアイコン -->
                     <i-line-md-loading-twotone-loop
                         v-if="file.status === 'アップロード成功'"
-                        class="w-24 h-24 flex-shrink-0" />
+                        class="w-24 h-24 flex-shrink-0"
+                    />
 
                     <!-- ジョブ処理成功時のアイコン -->
                     <i-ic-round-check-circle
                         v-if="file.status === 'ジョブ処理成功'"
-                        class="text-green-500 w-24 h-24 flex-shrink-0" />
+                        class="text-green-500 w-24 h-24 flex-shrink-0"
+                    />
 
                     <!-- アップロード失敗時（クリックで再アップロード） -->
                     <div
@@ -103,8 +134,14 @@ const resumeUpload = (index) => {
                         @click="retryUpload(file, index)"
                         class="flex items-center cursor-pointer"
                     >
-                        <ToolTip :message="file.errorMessage || 'エラーが発生しました'">
-                            <i-tdesign-error-circle-filled class="text-teto-500 w-24 h-24 flex-shrink-0" />
+                        <ToolTip
+                            :message="
+                                file.errorMessage || 'エラーが発生しました'
+                            "
+                        >
+                            <i-tdesign-error-circle-filled
+                                class="text-teto-500 w-24 h-24 flex-shrink-0"
+                            />
                         </ToolTip>
                     </div>
 

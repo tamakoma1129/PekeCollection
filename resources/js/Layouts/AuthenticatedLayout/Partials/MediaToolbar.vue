@@ -1,9 +1,9 @@
 <script setup>
-import {computed, onMounted, onUnmounted,} from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 import { useMediaStore } from "@/stores/media.js";
 import MediaSpace from "./MediaSpace.vue";
-import {useMediaList} from "@/stores/mediaList.js";
-import {formatSecondsToTime} from "@/utils.js";
+import { useMediaList } from "@/stores/mediaList.js";
+import { formatSecondsToTime } from "@/utils.js";
 
 const mediaStore = useMediaStore();
 const mediaListStore = useMediaList();
@@ -72,23 +72,22 @@ const setPreviousMedia = () => {
         <!-- 再生/停止ボタン -->
         <div class="flex gap-16 mr-16">
             <button @click="setPreviousMedia">
-              <i-iconoir-skip-prev-solid class="h-24 w-24 text-sumi-800" />
+                <i-iconoir-skip-prev-solid class="h-24 w-24 text-sumi-800" />
             </button>
             <button @click="togglePlay">
                 <i-iconoir-pause-solid
                     v-if="isPlaying"
                     class="h-24 w-24 text-sumi-800"
                 />
-                <i-iconoir-play-solid
-                    v-else
-                    class="h-24 w-24 text-sumi-800"
-                />
+                <i-iconoir-play-solid v-else class="h-24 w-24 text-sumi-800" />
             </button>
             <button @click="setNextMedia">
-              <i-iconoir-skip-next-solid class="h-24 w-24 text-sumi-800" />
+                <i-iconoir-skip-next-solid class="h-24 w-24 text-sumi-800" />
             </button>
             <!-- プレビュー画像 -->
-            <div class="w-40 h-40 bg-sumi-900 overflow-hidden border border-sumi-400 box-content">
+            <div
+                class="w-40 h-40 bg-sumi-900 overflow-hidden border border-sumi-400 box-content"
+            >
                 <img
                     v-if="mediaStore.preview_image_path"
                     :src="mediaStore.preview_image_path"
@@ -105,10 +104,16 @@ const setPreviousMedia = () => {
         <!-- 再生位置スライダー -->
         <div class="flex items-center">
             <div class="w-40 h-full text-sm mr-8">
-                <p class="text-right text-miku-400 whitespace-nowrap font-semibold">{{ formatSecondsToTime(currentTime) }}</p>
+                <p
+                    class="text-right text-miku-400 whitespace-nowrap font-semibold"
+                >
+                    {{ formatSecondsToTime(currentTime) }}
+                </p>
             </div>
             <div class="w-[600px]">
-                <p class="text-center whitespace-nowrap overflow-hidden overflow-ellipsis">
+                <p
+                    class="text-center whitespace-nowrap overflow-hidden overflow-ellipsis"
+                >
                     {{ mediaStore.title }}
                 </p>
                 <input
@@ -121,10 +126,11 @@ const setPreviousMedia = () => {
                 />
             </div>
             <div class="w-40 h-full text-sm">
-                <p class="text-right whitespace-nowrap font-semibold">{{ formatSecondsToTime(duration) }}</p>
+                <p class="text-right whitespace-nowrap font-semibold">
+                    {{ formatSecondsToTime(duration) }}
+                </p>
             </div>
         </div>
-
 
         <div class="ml-16 flex items-center gap-16">
             <!-- 音量コントロール -->
@@ -138,12 +144,11 @@ const setPreviousMedia = () => {
                         v-else-if="volume <= 0.5"
                         class="h-24 w-24"
                     />
-                    <i-pepicons-pop-speaker-high
-                        v-else
-                        class="h-24 w-24"
-                    />
+                    <i-pepicons-pop-speaker-high v-else class="h-24 w-24" />
                 </div>
-                <div class="hidden absolute bottom-24 -right-8 peer-hover:flex hover:flex w-40 border-0 animate-scale-up-bottom bg-gray-100 py-8 justify-center">
+                <div
+                    class="hidden absolute bottom-24 -right-8 peer-hover:flex hover:flex w-40 border-0 animate-scale-up-bottom bg-gray-100 py-8 justify-center"
+                >
                     <input
                         type="range"
                         min="0"

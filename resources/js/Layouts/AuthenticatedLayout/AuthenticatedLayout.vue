@@ -1,9 +1,9 @@
 <script setup>
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import ApplicationLogo from "@/Components/ApplicationLogo.vue";
+import Dropdown from "@/Components/Dropdown.vue";
+import DropdownLink from "@/Components/DropdownLink.vue";
+import NavLink from "@/Components/NavLink.vue";
+import { Link } from "@inertiajs/vue3";
 import MediaToolbar from "@/Layouts/AuthenticatedLayout/Partials/MediaToolbar.vue";
 import FileUploader from "@/Layouts/AuthenticatedLayout/Partials/FileUploader.vue";
 import UploadQueue from "@/Layouts/AuthenticatedLayout/Partials/UploadQueue.vue";
@@ -12,13 +12,14 @@ import UploadQueue from "@/Layouts/AuthenticatedLayout/Partials/UploadQueue.vue"
 <template>
     <div class="flex h-screen">
         <!-- サイドバー -->
-        <nav
-            class="bg-white min-w-168 fixed"
-        >
+        <nav class="bg-white min-w-168 fixed">
             <div class="flex flex-col px-16 items-end pt-8">
                 <!-- ロゴ -->
                 <div class="flex shrink-0 items-center mr-auto mb-40">
-                    <Link :href="route('media.index', {'mediaType': 'all'})" class="flex items-center">
+                    <Link
+                        :href="route('media.index', { mediaType: 'all' })"
+                        class="flex items-center"
+                    >
                         <ApplicationLogo
                             class="block h-40 w-auto fill-current text-gray-800"
                         />
@@ -34,40 +35,58 @@ import UploadQueue from "@/Layouts/AuthenticatedLayout/Partials/UploadQueue.vue"
                     ホーム
                 </NavLink>
                 <NavLink
-                    :href="route('media.index', {'mediaType': 'all'})"
-                    :active="route().current('media.index', {'mediaType': 'all'})"
+                    :href="route('media.index', { mediaType: 'all' })"
+                    :active="
+                        route().current('media.index', { mediaType: 'all' })
+                    "
                 >
                     <i-token-branded-media class="w-24 h-24 mb-4 mr-16" />
                     全部
                 </NavLink>
                 <NavLink
-                    :href="route('media.index', {'mediaType': 'image'})"
-                    :active="route().current('media.index', {'mediaType': 'image'})"
+                    :href="route('media.index', { mediaType: 'image' })"
+                    :active="
+                        route().current('media.index', { mediaType: 'image' })
+                    "
                 >
-                    <i-pepicons-pop-photo class="w-24 h-24 mb-4 mr-16 bg-green-500 p-4 text-white" />
+                    <i-pepicons-pop-photo
+                        class="w-24 h-24 mb-4 mr-16 bg-green-500 p-4 text-white"
+                    />
                     画像
                 </NavLink>
                 <NavLink
-                    :href="route('media.index', {'mediaType': 'video'})"
-                    :active="route().current('media.index', {'mediaType': 'video'})"
+                    :href="route('media.index', { mediaType: 'video' })"
+                    :active="
+                        route().current('media.index', { mediaType: 'video' })
+                    "
                 >
-                    <i-pepicons-pop-clapperboard class="w-24 h-24 mb-4 mr-16 bg-blue-500 p-4 text-white" />
+                    <i-pepicons-pop-clapperboard
+                        class="w-24 h-24 mb-4 mr-16 bg-blue-500 p-4 text-white"
+                    />
                     動画
                 </NavLink>
                 <NavLink
-                    :href="route('media.index', {'mediaType': 'audio'})"
-                    :active="route().current('media.index', {'mediaType': 'audio'})"
+                    :href="route('media.index', { mediaType: 'audio' })"
+                    :active="
+                        route().current('media.index', { mediaType: 'audio' })
+                    "
                     class="flex items-center"
                 >
-                    <i-fa6-solid-headphones class="w-24 h-24 mb-4 mr-16 bg-teto-500 p-4 text-white" />
+                    <i-fa6-solid-headphones
+                        class="w-24 h-24 mb-4 mr-16 bg-teto-500 p-4 text-white"
+                    />
                     音源
                 </NavLink>
                 <NavLink
-                    :href="route('media.index', {'mediaType': 'manga'})"
-                    :active="route().current('media.index', {'mediaType': 'manga'})"
+                    :href="route('media.index', { mediaType: 'manga' })"
+                    :active="
+                        route().current('media.index', { mediaType: 'manga' })
+                    "
                     class="flex items-center"
                 >
-                    <i-bi-book class="w-24 h-24 mb-4 mr-16 bg-violet-500 p-4 text-white" />
+                    <i-bi-book
+                        class="w-24 h-24 mb-4 mr-16 bg-violet-500 p-4 text-white"
+                    />
                     漫画
                 </NavLink>
                 <NavLink
@@ -75,7 +94,9 @@ import UploadQueue from "@/Layouts/AuthenticatedLayout/Partials/UploadQueue.vue"
                     :active="route().current('manga.create')"
                     class="flex items-center mt-40"
                 >
-                    <i-fluent-book-add-24-filled class="w-24 h-24 mb-4 mr-16 bg-violet-500 p-4 text-white" />
+                    <i-fluent-book-add-24-filled
+                        class="w-24 h-24 mb-4 mr-16 bg-violet-500 p-4 text-white"
+                    />
                     漫画追加
                 </NavLink>
             </div>
@@ -83,9 +104,15 @@ import UploadQueue from "@/Layouts/AuthenticatedLayout/Partials/UploadQueue.vue"
         <!-- 右要素 -->
         <div class="ml-168 w-full flex flex-col overflow-x-hidden">
             <!-- 上部ナビバー -->
-            <nav class="flex items-center justify-end bg-white pr-24 h-40 sticky top-0 z-1 gap-x-16">
-                <a href="/telescope" target="_blank" class="hover:text-miku-500">Telescope</a>
-                <a href="/pulse" target="_blank" class="hover:text-miku-500">Pulse</a>
+            <nav
+                class="flex items-center justify-end bg-white pr-24 h-40 sticky top-0 z-1 gap-x-16"
+            >
+                <a href="/telescope" target="_blank" class="hover:text-miku-500"
+                    >Telescope</a
+                >
+                <a href="/pulse" target="_blank" class="hover:text-miku-500"
+                    >Pulse</a
+                >
                 <!-- ユーザー名ドロップダウン -->
                 <div class="relative ms-16">
                     <Dropdown align="right" width="168">
@@ -114,9 +141,7 @@ import UploadQueue from "@/Layouts/AuthenticatedLayout/Partials/UploadQueue.vue"
                         </template>
 
                         <template #content>
-                            <DropdownLink
-                                :href="route('password.edit')"
-                            >
+                            <DropdownLink :href="route('password.edit')">
                                 パスワードの変更
                             </DropdownLink>
                             <DropdownLink
@@ -132,7 +157,9 @@ import UploadQueue from "@/Layouts/AuthenticatedLayout/Partials/UploadQueue.vue"
             </nav>
 
             <!-- メイン -->
-            <div class="flex-1 overflow-y-auto rounded-tl-3xl bg-sumi-200 p-16 pb-168">
+            <div
+                class="flex-1 overflow-y-auto rounded-tl-3xl bg-sumi-200 p-16 pb-168"
+            >
                 <!-- メインコンテンツ -->
                 <main>
                     <slot />
