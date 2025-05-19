@@ -10,6 +10,8 @@ if [ ! -f .env ]; then
     echo "'.env' が無いため作成します。"
     cp .env.example .env
     php artisan key:generate
+    # .envへreverbの設定を反映させるためのreverb:install
+    php artisan reverb:install
 fi
 
 if [ ! -f "storage/database.sqlite" ]; then

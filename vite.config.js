@@ -8,6 +8,11 @@ import { createHtmlPlugin } from 'vite-plugin-html'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 export default defineConfig({
+    server: {
+        hmr: {
+            host: '127.0.0.1'
+        }
+    },
     plugins: [
         laravel({
             input: 'resources/js/app.js',
